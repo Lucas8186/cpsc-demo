@@ -1,0 +1,2612 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HGJ · CPSC 产品安全注册</title>
+<style>
+
+/* ===================== ACCOUNT SWITCHER ===================== */
+
+.sidebar-acct {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  margin: 8px 8px 4px;
+  background: #1E3A5F;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background .15s;
+}
+.sidebar-acct:hover { background: #243F66; }
+.sidebar-acct .acct-dropdown {
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  z-index: 600;
+}
+
+.acct-switcher {
+  position: relative;
+  display: flex; align-items: center; gap: 6px;
+  background: #F1F5F9; border: 1px solid #E2E8F0;
+  border-radius: 8px; padding: 5px 10px 5px 12px;
+  cursor: pointer; user-select: none;
+  transition: background .15s;
+}
+.acct-switcher:hover { background: #E8EEF6; }
+.acct-badge {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.acct-info { line-height: 1.3; }
+.acct-id { font-size: 12px; font-weight: 700; color: #1A3A5C; }
+.acct-company { font-size: 11px; color: #64748B; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct-arrow { font-size: 10px; color: #94A3B8; transition: transform .2s; }
+.acct-dropdown {
+  display: none;
+  position: absolute; top: calc(100% + 6px); right: 0;
+  background: #fff; border: 1px solid #E2E8F0;
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  min-width: 240px; z-index: 500; overflow: hidden;
+}
+.acct-dropdown.open { display: block; }
+.acct-dropdown-header {
+  padding: 10px 14px 6px;
+  font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: .5px;
+}
+.acct-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; cursor: pointer;
+  transition: background .12s;
+}
+.acct-item:hover { background: #F8FAFC; }
+.acct-item.active { background: #EFF6FF; }
+.acct-item .acct-badge { width: 28px; height: 28px; font-size: 11px; }
+.acct-item-info .acct-id { font-size: 13px; }
+.acct-item-info .acct-company { max-width: 160px; }
+.acct-active-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #22C55E; margin-left: auto; flex-shrink: 0;
+}
+.acct-add {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px 11px;
+  border-top: 1px solid #F1F5F9;
+  color: #3B82F6; font-size: 13px; cursor: pointer;
+  transition: background .12s;
+}
+.acct-add:hover { background: #F8FAFC; }
+
+/* ===================== BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #F0F4F8;
+  color: #1C2B3A;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ===================== TOPBAR ===================== */
+.topbar {
+  height: 54px;
+  background: #fff;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.logo { display: flex; align-items: center; gap: 9px; }
+.logo-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg, #1E3A5F, #2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 800;
+}
+.logo-name { font-size: 15px; font-weight: 700; color: #1A3A5C; }
+.logo-sep { color: #CBD5E1; margin: 0 2px; }
+.logo-sub { font-size: 13px; color: #94A3B8; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.company-name { font-size: 13px; color: #64748B; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: #fff; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+
+
+/* English required badge */
+
+.citation-tag {
+  display:inline-flex;align-items:center;gap:5px;
+  background:#EFF6FF;border:1px solid #BFDBFE;
+  color:#1E40AF;border-radius:6px;
+  padding:4px 8px;font-size:12px;
+}
+.citation-tag code {
+  background:#DBEAFE;padding:1px 4px;border-radius:3px;font-size:11px;
+}
+.citation-tag button {
+  border:none;background:none;color:#93C5FD;cursor:pointer;
+  font-size:14px;line-height:1;padding:0;margin-left:2px;
+}
+.citation-tag button:hover { color:#1D4ED8; }
+
+.en-req {
+  display:inline-block;
+  font-size:9px;font-weight:700;
+  background:#DBEAFE;color:#1D4ED8;
+  border-radius:3px;padding:1px 5px;
+  margin-left:6px;letter-spacing:0.5px;
+  vertical-align:middle;
+}
+
+/* ===================== LAYOUT ===================== */
+.app-shell { display: flex; min-height: calc(100vh - 54px); }
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background: #fff;
+  border-right: 1px solid #E2E8F0;
+  padding: 16px 10px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 20px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 700; color: #94A3B8;
+  text-transform: uppercase; letter-spacing: .7px;
+  padding: 0 8px; margin-bottom: 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  transition: all .15s;
+  border: none; background: none; width: 100%; text-align: left;
+  font-family: inherit;
+}
+.nav-item:hover { background: #F8FAFC; color: #1C2B3A; }
+.nav-item.active { background: #EFF6FF; color: #2563EB; font-weight: 700; }
+.nav-item .ni-icon { font-size: 15px; flex-shrink: 0; }
+.nav-item .ni-badge {
+  margin-left: auto;
+  background: #FEF3C7; color: #92400E;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px;
+}
+.nav-item .ni-badge.green { background: #DCFCE7; color: #166534; }
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 24px 28px 100px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+/* ===================== VIEWS ===================== */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===================== CARDS ===================== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.card-head {
+  padding: 13px 18px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E8EEF6;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.card-head h3 { font-size: 14px; font-weight: 700; color: #1A3A5C; }
+.card-body { padding: 18px; }
+
+/* ===================== PRODUCT LIST ===================== */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 20px; gap: 16px; flex-wrap: wrap;
+}
+.page-header h1 { font-size: 20px; font-weight: 800; color: #1A3A5C; margin-bottom: 3px; }
+.page-header p { font-size: 13px; color: #64748B; }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.product-grid.list-mode {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+/* View toggle buttons */
+.view-toggle {
+  display: flex;
+  gap: 2px;
+  background: #F1F5F9;
+  border-radius: 8px;
+  padding: 3px;
+}
+.vt-btn {
+  border: none; background: transparent;
+  width: 30px; height: 30px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px;
+  color: #94A3B8; transition: all .15s;
+}
+.vt-btn:hover { color: #374151; }
+.vt-btn.active { background: #fff; color: #2563EB; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+/* List mode card */
+.product-grid.list-mode .product-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+}
+.product-grid.list-mode .pc-top { margin-bottom: 0; flex: 0 0 220px; }
+.product-grid.list-mode .pc-meta { flex-direction: row; flex: 1; gap: 20px; }
+.product-grid.list-mode .pc-footer { margin-top: 0; padding-top: 0; border-top: none; flex: 0 0 auto; flex-direction: row; align-items: center; gap: 8px; }
+.product-grid.list-mode .pc-footer .pc-date { display: none; }
+.product-grid.list-mode .pc-row strong { min-width: 44px; }
+/* Hide new-product-card in list mode (replaced by inline row) */
+.product-grid.list-mode .new-product-card { display: none; }
+.list-add-row {
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 12px;
+  background: #F8FAFC;
+  border: 1px dashed #CBD5E1;
+  border-radius: 10px;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px; font-weight: 600; color: #94A3B8;
+  transition: all .15s;
+}
+.list-add-row:hover { border-color: #3B82F6; color: #2563EB; background: #EFF6FF; }
+.product-grid.list-mode + .list-add-row { display: flex; }
+.product-card {
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+}
+.product-card:hover { border-color: #93C5FD; box-shadow: 0 4px 12px rgba(59,130,246,.1); transform: translateY(-1px); }
+.product-card.done { border-left: 3px solid #22C55E; }
+.product-card.pending { border-left: 3px solid #F59E0B; }
+.pc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.pc-name { font-size: 14px; font-weight: 700; color: #1C2B3A; margin-bottom: 3px; }
+.pc-id { font-size: 11px; color: #94A3B8; font-family: ui-monospace, monospace; }
+.pc-meta { display: flex; flex-direction: column; gap: 5px; }
+.pc-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748B; }
+.pc-row strong { color: #374151; font-weight: 600; min-width: 52px; }
+.pc-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 6px;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+}
+.pc-date { font-size: 11px; color: #94A3B8; }
+
+/* New product card (CTA) */
+.new-product-card {
+  background: #F8FAFC;
+  border: 2px dashed #CBD5E1;
+  border-radius: 12px;
+  padding: 24px 16px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  min-height: 140px;
+  color: #94A3B8;
+}
+.new-product-card:hover {
+  border-color: #3B82F6; background: #EFF6FF; color: #2563EB;
+}
+.new-product-card .npc-icon { font-size: 28px; }
+.new-product-card .npc-text { font-size: 13px; font-weight: 600; }
+.new-product-card .npc-sub { font-size: 11px; }
+
+/* ===================== TAGS ===================== */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.tg-green { background: #DCFCE7; color: #166534; }
+.tg-amber { background: #FEF3C7; color: #92400E; }
+.tg-blue { background: #DBEAFE; color: #1D4ED8; }
+.tg-gray { background: #F1F5F9; color: #64748B; }
+.tg-red { background: #FEE2E2; color: #991B1B; }
+
+/* ===================== FORM ===================== */
+.form-block { margin-bottom: 22px; }
+.form-title {
+  font-size: 11px; font-weight: 700; color: #94A3B8;
+  text-transform: uppercase; letter-spacing: .6px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.form-title::after { content:''; flex:1; height:1px; background:#E2E8F0; }
+.fg { display: grid; gap: 12px; }
+.fg.c2 { grid-template-columns: 1fr 1fr; }
+.fg.c3 { grid-template-columns: 1fr 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label {
+  font-size: 12px; font-weight: 600; color: #374151;
+  display: flex; align-items: center; gap: 5px;
+}
+.req { color: #EF4444; }
+.opt { font-size: 10px; font-weight: 500; color: #94A3B8; background: #F1F5F9; padding: 1px 5px; border-radius: 4px; }
+.field input, .field select, .field textarea {
+  padding: 9px 12px;
+  border: 1px solid #D1D9E2;
+  border-radius: 8px;
+  font-size: 13px; font-family: inherit; color: #1C2B3A; background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+}
+.field input::placeholder, .field textarea::placeholder { color: #C4CDD8; }
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394A3B8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+}
+.field textarea { resize: vertical; min-height: 72px; }
+.field input[readonly] { background: #F8FAFC; color: #64748B; cursor: default; }
+.field-hint { font-size: 11px; color: #94A3B8; line-height: 1.5; }
+
+/* Checkbox list */
+.check-list { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 8px;
+  cursor: pointer; transition: all .15s;
+}
+.check-item:hover { border-color: #93C5FD; background: #F0F9FF; }
+.check-item.checked { border-color: #3B82F6; background: #EFF6FF; }
+.check-item input[type="checkbox"] { margin-top: 2px; width: 15px; height: 15px; cursor: pointer; }
+.check-item .ci-label strong { display: block; font-size: 13px; color: #1C2B3A; }
+.check-item .ci-label span { font-size: 12px; color: #64748B; }
+
+/* ===================== BUTTONS ===================== */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; font-family: inherit;
+  transition: all .15s; white-space: nowrap;
+}
+.btn-primary { background: #2563EB; color: #fff; }
+.btn-primary:hover { background: #1D4ED8; }
+.btn-success { background: #16A34A; color: #fff; }
+.btn-success:hover { background: #15803D; }
+.btn-outline { background: #fff; border: 1px solid #D1D9E2; color: #374151; }
+.btn-outline:hover { background: #F8FAFC; }
+.btn-ghost { background: transparent; color: #2563EB; }
+.btn-ghost:hover { background: #EFF6FF; }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+.btn-lg { padding: 12px 24px; font-size: 15px; border-radius: 10px; }
+
+/* ===================== TABLE ===================== */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th {
+  text-align: left; padding: 9px 12px;
+  border-bottom: 2px solid #E2E8F0;
+  color: #64748B; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .4px; white-space: nowrap;
+}
+.tbl td { padding: 12px; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
+.tbl tr:hover td { background: #FAFCFF; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: #1D4ED8; }
+
+/* ===================== ALERTS ===================== */
+.alert {
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 13px; line-height: 1.65;
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 14px;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert.info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+.alert.success { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; }
+.alert.warn { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+
+/* ===================== DELIVERY CARD ===================== */
+.delivery-card {
+  background: linear-gradient(135deg, #1E3A5F 0%, #2563EB 100%);
+  border-radius: 14px; padding: 22px; color: #fff; margin-bottom: 16px;
+}
+.delivery-card h3 { font-size: 16px; margin-bottom: 4px; }
+.delivery-card .dc-sub { font-size: 12px; color: #BFDBFE; margin-bottom: 16px; }
+.id-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.id-chip {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 10px; padding: 11px 15px; min-width: 130px;
+}
+.id-chip .ic-lbl { font-size: 10px; color: rgba(255,255,255,.6); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.id-chip .ic-val { font-size: 16px; font-weight: 800; margin-top: 3px; }
+
+/* ===================== PRODUCT DETAIL ===================== */
+.detail-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 20px;
+}
+.detail-back {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; color: #64748B; cursor: pointer;
+  padding: 6px 0; border: none; background: none; font-family: inherit;
+  transition: color .15s;
+}
+.detail-back:hover { color: #2563EB; }
+.detail-title-row {
+  flex: 1;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+}
+.detail-title-row h1 { font-size: 20px; font-weight: 800; color: #1A3A5C; margin-bottom: 4px; }
+.detail-title-row .dt-meta { font-size: 13px; color: #64748B; display: flex; align-items: center; gap: 8px; }
+
+/* Delivery voucher inline block */
+.voucher-block {
+  background: linear-gradient(135deg, #1E3A5F 0%, #2563EB 100%);
+  border-radius: 14px; padding: 22px; color: #fff;
+}
+.voucher-block .vb-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.voucher-block .vb-sub { font-size: 12px; color: #BFDBFE; margin-bottom: 16px; }
+.voucher-block .vb-locked {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.25);
+  border-radius: 10px; padding: 14px 16px;
+  font-size: 13px; color: rgba(255,255,255,.6);
+}
+
+/* Delivery summary table row actions */
+.copy-btn-inline {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.copy-btn-inline:hover { background: #DBEAFE; }
+.copy-btn-inline.copied { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+
+/* ===================== BOTTOM ACTION BAR ===================== */
+.action-bar {
+  position: fixed; bottom: 0; left: 200px; right: 0;
+  background: #fff; border-top: 1px solid #E2E8F0;
+  padding: 12px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 100; box-shadow: 0 -4px 12px rgba(0,0,0,.05);
+}
+.action-bar .ab-hint { font-size: 12px; color: #94A3B8; }
+.action-bar .ab-btns { display: flex; gap: 10px; }
+
+/* ===================== ONBOARDING ===================== */
+#onboarding-shell {
+  display: none;
+  min-height: 100vh;
+  background: #F0F4F8;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 16px 80px;
+}
+#onboarding-shell.active { display: flex; }
+
+.ob-header { text-align: center; margin-bottom: 36px; }
+.ob-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+.ob-logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, #1E3A5F, #2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 18px; font-weight: 800;
+}
+.ob-logo-name { font-size: 18px; font-weight: 800; color: #1A3A5C; }
+.ob-header h2 { font-size: 22px; font-weight: 800; color: #1A3A5C; margin-bottom: 8px; }
+.ob-header p { font-size: 14px; color: #64748B; max-width: 420px; line-height: 1.7; }
+
+/* Onboarding step tabs */
+.ob-steps {
+  display: flex; gap: 0;
+  background: #fff; border: 1px solid #E2E8F0; border-radius: 12px;
+  overflow: hidden; margin-bottom: 24px; width: 100%; max-width: 640px;
+}
+.ob-step {
+  flex: 1; padding: 12px 6px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  position: relative;
+  background: #fff;
+}
+.ob-step + .ob-step { border-left: 1px solid #E2E8F0; }
+.ob-step.done { background: #F0FDF4; }
+.ob-step.active { background: #EFF6FF; }
+.ob-step-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #E2E8F0; color: #94A3B8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.ob-step.done .ob-step-num { background: #22C55E; color: #fff; }
+.ob-step.active .ob-step-num { background: #3B82F6; color: #fff; }
+.ob-step-label { font-size: 12px; font-weight: 600; color: #94A3B8; }
+.ob-step.done .ob-step-label { color: #16A34A; }
+.ob-step.active .ob-step-label { color: #2563EB; }
+.ob-step-sub { font-size: 10px; color: #CBD5E1; }
+.ob-step.done .ob-step-sub { color: #86EFAC; }
+.ob-step.active .ob-step-sub { color: #93C5FD; }
+
+/* Onboarding card */
+.ob-card {
+  background: #fff; border: 1px solid #E2E8F0; border-radius: 16px;
+  overflow: hidden; width: 100%; max-width: 640px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+}
+.ob-card-head {
+  padding: 18px 22px;
+  border-bottom: 1px solid #E8EEF6;
+  background: linear-gradient(135deg, #1E3A5F, #2563EB);
+  color: #fff;
+}
+.ob-card-head h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.ob-card-head p { font-size: 12px; color: #BFDBFE; line-height: 1.6; }
+.ob-card-body { padding: 22px; }
+.ob-card-footer {
+  padding: 16px 22px;
+  background: #F8FAFC; border-top: 1px solid #E8EEF6;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+/* Onboarding step panels */
+.ob-panel { display: none; }
+.ob-panel.active { display: block; }
+
+/* HGJ handling indicator */
+.hgj-handling {
+  background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px;
+  padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
+  margin-bottom: 14px;
+}
+.hgj-badge {
+  background: #1E3A5F; color: #fff; border-radius: 6px;
+  padding: 3px 8px; font-size: 10px; font-weight: 700; white-space: nowrap;
+  flex-shrink: 0; margin-top: 2px;
+}
+.hgj-handling strong { display: block; font-size: 13px; color: #1C2B3A; margin-bottom: 3px; }
+.hgj-handling p { font-size: 12px; color: #64748B; line-height: 1.6; }
+
+/* Timeline in onboarding */
+.mini-tl { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 12px; padding: 10px 0; position: relative; }
+.tl-item + .tl-item::before {
+  content:''; position: absolute; left: 13px; top: 0; height: 10px;
+  width: 2px; background: #E2E8F0;
+}
+.tl-dot {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; position: relative; z-index: 1;
+  margin-top: 2px;
+}
+.td-done { background: #22C55E; color: #fff; }
+.td-you { background: #3B82F6; color: #fff; }
+.td-hgj { background: #1E3A5F; color: #fff; }
+.td-wait { background: #E2E8F0; color: #94A3B8; }
+.tl-item-body strong { display: block; font-size: 13px; color: #1C2B3A; margin-bottom: 2px; }
+.tl-item-body p { font-size: 12px; color: #64748B; line-height: 1.6; }
+.you-badge { font-size: 10px; background: #DBEAFE; color: #1D4ED8; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 700; }
+.hgj-badge-sm { font-size: 10px; background: #E2E8F0; color: #1E3A5F; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 700; }
+
+/* ===================== SETTINGS VIEW ===================== */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.config-block {
+  background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;
+}
+.config-block h4 { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+
+/* ===================== DIVIDER ===================== */
+.divider { border: none; border-top: 1px dashed #E2E8F0; margin: 16px 0; }
+
+/* ===================== MODAL ===================== */
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); z-index: 500;
+  align-items: center; justify-content: center;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: #fff; border-radius: 16px; padding: 28px;
+  max-width: 480px; width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+}
+.modal h3 { font-size: 18px; color: #1C2B3A; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: #64748B; line-height: 1.7; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-success-icon { text-align: center; font-size: 52px; margin-bottom: 14px; }
+.id-result-box {
+  background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px;
+  padding: 16px; margin-bottom: 16px; text-align: center;
+}
+.id-result-chips { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+.id-result-chip { }
+.id-result-chip .irc-lbl { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; }
+.id-result-chip .irc-val { font-size: 17px; font-weight: 800; color: #166534; }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .action-bar { left: 0; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .fg.c2, .fg.c3 { grid-template-columns: 1fr; }
+  .product-grid { grid-template-columns: 1fr; }
+  .main-content { padding: 16px 14px 80px; }
+}
+/* ===== PAY MODAL ===== */
+.pay-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:900; }
+.pay-overlay.open { display:block; }
+.pay-modal {
+  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:420px; background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,0.18);
+  z-index:901; overflow:hidden;
+}
+.pay-modal.open { display:block; }
+.pay-modal-header {
+  display:flex; align-items:center; gap:10px;
+  padding:18px 20px 14px; border-bottom:1px solid #F1F5F9;
+}
+.pay-modal-header h3 { flex:1; font-size:15px; font-weight:700; color:#1A3A5C; margin:0; }
+.pay-modal-close { border:none; background:none; font-size:20px; color:#94A3B8; cursor:pointer; line-height:1; }
+.pay-modal-body { padding:18px 20px; }
+.pay-item-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.pay-item-name { font-size:14px; color:#334155; font-weight:600; }
+.pay-item-price { font-size:22px; font-weight:800; color:#1D4ED8; }
+.pay-desc { font-size:12px; color:#94A3B8; margin-bottom:16px; }
+.pay-methods { border-top:1px solid #F1F5F9; padding-top:14px; }
+.pay-method-label { font-size:11px; font-weight:600; color:#64748B; margin-bottom:8px; letter-spacing:.5px; }
+.pay-method-opt {
+  display:flex; align-items:center; gap:10px; padding:9px 12px;
+  border:1.5px solid #E2E8F0; border-radius:8px; cursor:pointer; margin-bottom:6px;
+  transition:border-color .15s, background .15s;
+}
+.pay-method-opt:has(input:checked) { border-color:#3B82F6; background:#EFF6FF; }
+.pay-method-opt input { accent-color:#3B82F6; }
+.pay-method-name { flex:1; font-size:13px; color:#334155; }
+.pay-method-balance { font-size:11px; color:#94A3B8; }
+.pay-modal-footer {
+  display:flex; gap:10px; justify-content:flex-end;
+  padding:14px 20px; border-top:1px solid #F1F5F9; background:#F8FAFC;
+}
+.pay-btn-cancel { padding:8px 18px; border:1.5px solid #E2E8F0; border-radius:7px; background:#fff; color:#64748B; font-size:13px; cursor:pointer; }
+.pay-btn-confirm { padding:8px 20px; border:none; border-radius:7px; background:#3B82F6; color:#fff; font-size:13px; font-weight:600; cursor:pointer; }
+.pay-btn-confirm:hover { background:#2563EB; }
+.pay-success-toast {
+  display:none; position:fixed; top:24px; left:50%; transform:translateX(-50%);
+  background:#10B981; color:#fff; padding:10px 24px; border-radius:8px;
+  font-size:14px; font-weight:600; z-index:999; box-shadow:0 4px 20px rgba(16,185,129,.3);
+}
+.pay-success-toast.show { display:block; animation:fadeInOut 2.2s ease forwards; }
+@keyframes fadeInOut { 0%{opacity:0;transform:translateX(-50%) translateY(-8px)} 15%{opacity:1;transform:translateX(-50%) translateY(0)} 80%{opacity:1} 100%{opacity:0} }
+
+/* ===== SEARCH / FILTER BAR ===== */
+.filter-bar {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.search-input {
+  display: flex; align-items: center; gap: 7px;
+  background: #fff; border: 1px solid #E2E8F0;
+  border-radius: 7px; padding: 6px 12px; flex: 1; max-width: 260px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.search-input:focus-within {
+  border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+}
+.search-input span { font-size: 13px; color: #94A3B8; }
+.search-input input {
+  border: none; outline: none; font-size: 13px; background: transparent; width: 100%;
+  color: #1C2B3A; line-height: 1.4;
+}
+.search-input input::placeholder { color: #94A3B8; }
+.filter-select {
+  border: 1px solid #E2E8F0; border-radius: 7px;
+  padding: 6px 30px 6px 12px; font-size: 13px; background: #fff;
+  color: #374151; cursor: pointer; line-height: 1.4;
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+.filter-select:focus {
+  border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+  outline: none;
+}
+.filter-label {
+  font-size: 12px; font-weight: 600; color: #475569;
+  white-space: nowrap; margin-right: 2px;
+}
+.filter-divider {
+  width: 1px; height: 22px; background: #E2E8F0; flex-shrink: 0;
+}
+.filter-date {
+  display: flex; align-items: center; gap: 6px;
+}
+.filter-date input[type="date"] {
+  border: 1px solid #E2E8F0; border-radius: 7px;
+  padding: 6px 10px; font-size: 13px; color: #374151;
+  line-height: 1.4; background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.filter-date input[type="date"]:focus {
+  border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+  outline: none;
+}
+.filter-date span { font-size: 12px; color: #94A3B8; }
+.filter-spacer { margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ========================================================
+     ONBOARDING SHELL(首次使用:3步向导,完成后消失)
+     ======================================================== -->
+<div id="onboarding-shell" class="active">
+
+  <div class="ob-header">
+    <div class="ob-logo">
+      <div class="ob-logo-icon">H</div>
+      <div class="ob-logo-name">HGJ · CPSC 产品安全注册</div>
+    </div>
+    <h2>欢迎使用,先完成账号初始化</h2>
+    <p>只需做一次。完成后您就可以随时提交产品证书,整个过程约 10 分钟。</p>
+  </div>
+
+  <!-- 步骤指示 -->
+  <div class="ob-steps">
+    <div class="ob-step active" id="ob-tab-1">
+      <div class="ob-step-num">1</div>
+      <div class="ob-step-label">填写资料</div>
+      <div class="ob-step-sub">填写资料</div>
+    </div>
+    <div class="ob-step" id="ob-tab-2">
+      <div class="ob-step-num">2</div>
+      <div class="ob-step-label">确认并支付</div>
+      <div class="ob-step-sub">核对信息并支付</div>
+    </div>
+    <div class="ob-step" id="ob-tab-3">
+      <div class="ob-step-num">3</div>
+      <div class="ob-step-label">等待开户</div>
+      <div class="ob-step-sub">HGJ 处理中</div>
+    </div>
+    <div class="ob-step" id="ob-tab-4">
+      <div class="ob-step-num">4</div>
+      <div class="ob-step-label">账号配置</div>
+      <div class="ob-step-sub">配置制造商 &amp; 检测机构</div>
+    </div>
+  </div>
+
+  <!-- === OB STEP 1: 注册账号 === -->
+  <div class="ob-card">
+    <div id="ob-panel-1" class="ob-panel active">
+      <div class="ob-card-head">
+        <h3>1 填写开户资料</h3>
+        <p>企业账号注册完成后将向您的邮箱发送一封账号配置。</p>
+      </div>
+      <div class="ob-card-body">
+
+<div class="fg c2" style="margin-bottom:14px">
+
+          <div style="grid-column:1/-1;font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-bottom:-4px">企业基本信息</div>
+
+          <div class="field">
+            <label>公司英文名称 <span class="en-req">EN</span> <span class="req">*</span></label>
+            <input type="text" placeholder="如:Guangzhou Toy Trading Co., Ltd.">
+          </div>
+          <div class="field">
+            <label>公司中文名称 <span class="req">*</span></label>
+            <input type="text" placeholder="如:广州玩具贸易有限公司">
+          </div>
+          <div class="field">
+            <label>IOR 编号 <span class="req">*</span></label>
+            <input type="text" placeholder="美国进口商编号，如191234-12300">
+            <div class="field-hint">Importer of Record，请注意有效性</div>
+          </div>
+
+          <div style="grid-column:1/-1;font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-top:6px;margin-bottom:-4px">企业地址</div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label>
+            <input type="text" placeholder="街道地址,如:168 Chenghai Road">
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label>详细地址 <span class="en-req">EN</span> <span class="opt">选填</span></label>
+            <input type="text" placeholder="楼层、房间号等补充信息">
+          </div>
+          <div class="field">
+            <label>国家 <span class="req">*</span></label>
+            <select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select>
+          </div>
+          <div class="field">
+            <label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label>
+            <input type="text" placeholder="如:Guangdong">
+          </div>
+          <div class="field">
+            <label>城市 <span class="en-req">EN</span> <span class="req">*</span></label>
+            <input type="text" placeholder="如:Shantou">
+          </div>
+          <div class="field">
+            <label>邮政编码 <span class="req">*</span></label>
+            <input type="text" placeholder="如:515000">
+          </div>
+
+
+
+          <div style="grid-column:1/-1;font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-top:6px;margin-bottom:-4px">账号信息</div>
+
+          <div class="field">
+            <label>接收通知邮箱<span class="req">*</span></label>
+            <input type="text" placeholder="用于接收 HGJ 开户完成通知">
+            <div class="field-hint">建议用公司邮箱</div>
+          </div>
+          <div class="field">
+            <label>账号 ID(Certifier ID)<span class="req">*</span></label>
+            <input type="text" placeholder="自己取,如 GZTOYTRADE">
+            <div class="field-hint">英文+数字,最多15位。这是您在 CPSC 的唯一标识,报关行会用到</div>
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label class="check-item" style="border:1.5px solid #BFDBFE;background:#EFF6FF;border-radius:8px;padding:12px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px">
+              <input type="checkbox" id="ob-auth-check" style="margin-top:2px;flex-shrink:0;accent-color:#3B82F6;width:16px;height:16px">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:#1E40AF">授权海管家代办 CPSC 企业账号注册</div>
+                <div style="font-size:12px;color:#3B82F6;margin-top:3px">本人确认为上方公司授权代表,同意委托海管家向美国 CPSC 提交企业账号开户申请及后续证书提交服务,并保证所提供资料真实准确。</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="ob-card-footer">
+        <span style="font-size:12px;color:#94A3B8">第 1 步,共 4 步</span>
+        <button class="btn btn-primary" onclick="obNext(1)">下一步:确认信息 →</button>
+      </div>
+    </div>
+
+    <!-- === OB STEP 2: 确认信息并支付 === -->
+    <div id="ob-panel-2" class="ob-panel">
+      <div class="ob-card-head">
+        <h3>2 确认信息并支付</h3>
+        <p>请核对以下信息无误后支付代注册费用，支付后 HGJ 将开始处理开户。</p>
+      </div>
+      <div class="ob-card-body">
+
+        <!-- 信息确认摘要 -->
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:18px;margin-bottom:20px">
+          <div style="font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-bottom:14px">企业基本信息</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:14px">
+            <div><span style="font-size:12px;color:#94A3B8">公司英文名称</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">Guangzhou Toy Trading Co., Ltd.</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">公司中文名称</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">广州玩具贸易有限公司</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">IOR 编号</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px;font-family:ui-monospace,monospace">191234-12300</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">账号 ID (Certifier ID)</span><div style="font-size:14px;font-weight:600;color:#1D4ED8;margin-top:2px;font-family:ui-monospace,monospace">GZTOYTRADE</div></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-bottom:10px">企业地址</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:14px">
+            <div><span style="font-size:12px;color:#94A3B8">街道地址</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">168 Chenghai Road</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">城市 / 省</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">Shantou, Guangdong</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">邮政编码</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">515000</div></div>
+            <div><span style="font-size:12px;color:#94A3B8">国家</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">中国</div></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#1A3A5C;padding-left:8px;border-left:3px solid #3B82F6;margin-bottom:10px">账号信息</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px">
+            <div><span style="font-size:12px;color:#94A3B8">接收通知邮箱</span><div style="font-size:14px;font-weight:500;color:#1A3A5C;margin-top:2px">compliance@guangzhoutoy.com</div></div>
+          </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid #E2E8F0;display:flex;align-items:flex-start;gap:8px">
+            <span style="font-size:14px;color:#22C55E">✅</span>
+            <div style="font-size:13px;color:#64748B">已授权海管家代办 CPSC 企业账号注册</div>
+          </div>
+        </div>
+
+        <!-- 费用 & 支付 -->
+        <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px 18px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#92400E">🏢 代注册费用</div>
+              <div style="font-size:12px;color:#D97706;margin-top:2px">HGJ 代理 CPSC 企业账号注册及开户服务</div>
+            </div>
+            <div style="font-size:24px;font-weight:800;color:#92400E">¥ 500</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#94A3B8;margin-bottom:16px">支付后 HGJ 将在 1-3 个工作日内完成 CPSC 账号注册</div>
+
+      </div>
+      <div class="ob-card-footer">
+        <button class="btn btn-outline btn-sm" onclick="obPrev(2)">← 上一步</button>
+        <button class="btn btn-primary" onclick="openPayModal('onboarding')">💳 支付 ¥500 并提交</button>
+      </div>
+    </div>
+
+    <!-- === OB STEP 3: 等待开户 === -->
+    <div id="ob-panel-3" class="ob-panel">
+      <div class="ob-card-head">
+        <h3>2 资料已提交,等待开户</h3>
+        <p>正在为您处理以下事项</p>
+      </div>
+      <div class="ob-card-body">
+
+        <!-- 处理时间线 -->
+        <div style="margin-bottom:20px">
+          <!-- 步骤1:已完成 -->
+          <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+              <div style="width:28px;height:28px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="width:2px;height:24px;background:#E2E8F0;margin-top:4px"></div>
+            </div>
+            <div style="padding-top:4px">
+              <div style="font-size:14px;font-weight:600;color:#16A34A">审核您提交的资料</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:2px">已完成</div>
+            </div>
+          </div>
+          <!-- 步骤2:处理中 -->
+          <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+              <div style="width:28px;height:28px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="animation:spin 1.2s linear infinite"><circle cx="7" cy="7" r="5" stroke="rgba(255,255,255,0.35)" stroke-width="2"/><path d="M7 2A5 5 0 0 1 12 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div style="width:2px;height:24px;background:#E2E8F0;margin-top:4px"></div>
+            </div>
+            <div style="padding-top:4px">
+              <div style="font-size:14px;font-weight:600;color:#2563EB">注册 CPSC 企业账号并开通申报</div>
+              <div style="font-size:12px;color:#3B82F6;margin-top:2px">处理中</div>
+            </div>
+          </div>
+          <!-- 步骤3:账号信息已发送 -->
+          <div id="ob-timeline-step3" style="display:flex;align-items:flex-start;gap:14px">
+            <div style="flex-shrink:0">
+              <div id="ob-step3-dot" style="width:28px;height:28px;border-radius:50%;background:#E5E7EB;display:flex;align-items:center;justify-content:center">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="#9CA3AF" stroke-width="2"/></svg>
+              </div>
+            </div>
+            <div style="padding-top:4px">
+              <div id="ob-step3-label" style="font-size:14px;font-weight:600;color:#9CA3AF">发送账号信息给您</div>
+              <div id="ob-step3-sub" style="font-size:12px;color:#C4C9D1;margin-top:2px">等待中</div>
+            </div>
+          </div>
+        </div>
+
+        <style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>
+
+        <div class="alert info" style="margin-bottom:16px">
+          <span class="alert-icon">💬</span>
+          <div>预计 <strong>1-3 个工作日</strong>完成账号注册和功能开通。完成后会将账号信息发送给您。</div>
+        </div>
+
+        <!-- 账号信息卡片（第3步完成后才显示） -->
+        <div id="ob-acct-info-card" style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:10px;padding:16px 18px;margin-bottom:16px;display:none">
+          <div style="font-size:12px;font-weight:700;color:#0369A1;margin-bottom:12px">🏢 您的 CPSC 账号信息</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:#fff;border:1px solid #E0F2FE;border-radius:7px;padding:10px 12px">
+              <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:3px">企业中文名称</div>
+              <div style="font-size:13px;font-weight:600;color:#1A3A5C">广州玩具贸易有限公司</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E0F2FE;border-radius:7px;padding:10px 12px">
+              <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:3px">企业英文名称</div>
+              <div style="font-size:13px;font-weight:600;color:#1A3A5C">Guangzhou Toy Trading Co., Ltd.</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E0F2FE;border-radius:7px;padding:10px 12px">
+              <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:3px">CPSC 登录账号</div>
+              <div style="font-size:13px;font-weight:600;color:#1A3A5C">ops@hgj.com</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E0F2FE;border-radius:7px;padding:10px 12px">
+              <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:3px">Certifier ID</div>
+              <div style="font-size:14px;font-weight:800;color:#0C4A6E;font-family:ui-monospace,monospace">GZTOYTRADE</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E0F2FE;border-radius:7px;padding:10px 12px">
+              <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:3px">初始密码</div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A5C;font-family:ui-monospace,monospace;letter-spacing:1px">Gz@2026#Toy</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center">
+          <button class="btn btn-primary" id="ob-confirm-acct-btn" onclick="obNext(3)" style="padding:10px 28px;font-size:14px;display:none">✅ 确认账号信息，继续</button>
+          <div style="margin-top:10px;font-size:12px;color:#9CA3AF">信息有误?<a href="#" style="color:#9CA3AF;text-decoration:underline;text-underline-offset:2px">联系 HGJ 客服</a></div>
+        </div>
+
+      </div>
+      <div class="ob-card-footer">
+        <button class="btn btn-outline btn-sm" onclick="obPrev(3)">← 上一步</button>
+      </div>
+    </div>
+
+    <!-- === OB STEP 4: 账号配置 === -->
+    <div id="ob-panel-4" class="ob-panel">
+      <div class="ob-card-head">
+        <h3>3 账号配置</h3>
+        <p>填一次,之后每次提交产品证书自动带入,无需重复填写。</p>
+      </div>
+      <div class="ob-card-body">
+
+        <div class="alert info" style="margin-bottom:18px">
+          <span class="alert-icon">✉️</span>
+          <div>请先点击邮件中的HGJ 开户完成后,填写以下制造商和检测机构信息。</div>
+        </div>
+
+        <div class="form-block">
+          <div class="form-title">常用制造商</div>
+          <div class="fg c2" style="margin-bottom:10px">
+            <div class="field">
+              <label>制造商名称(英文)<span class="req">*</span></label>
+              <input type="text" placeholder="如 Shantou Happy Toys Manufacturing Co., Ltd.">
+            </div>
+            <div class="field">
+              <label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label>
+              <input type="text" placeholder="如 storm,用于内部识别">
+              <div class="field-hint">提交给 CPSC 的唯一标识,设定后请勿随意修改</div>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label>
+              <input type="text" placeholder="如:168 Chenghai Road">
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label>
+              <input type="text" placeholder="楼层、套间等补充信息">
+            </div>
+            <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+            <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:Guangdong"></div>
+            <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:汕头市"></div>
+            <div class="field"><label>邮政编码 <span class="req">*</span></label><input type="text" placeholder="如:515000"></div>
+            <div class="field"><label>联系电话 <span class="req">*</span></label><input type="text" placeholder="如:+86-754-88888888"></div>
+            <div class="field"><label>联系邮箱 <span class="req">*</span></label><input type="text" placeholder="工厂联系邮箱"></div>
+          </div>
+          <div id="ob-mfr-list"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="obAddItem('mfr')">+ 添加供应商</button>
+        </div>
+
+        <hr class="divider">
+
+        <div class="form-block">
+          <div class="form-title">常用检测机构</div>
+          <div class="fg c2" style="margin-bottom:10px">
+            <div class="field">
+              <label>检测机构名称(英文)<span class="req">*</span></label>
+              <input type="text" placeholder="如 SGS-CSTC Standards Technical Services">
+            </div>
+            <div class="field">
+              <label>机构类型 <span class="req">*</span></label>
+              <select id="ob-lab-type-1" onchange="document.getElementById('ob-lab-cpscid-1').style.display=this.value==='ITL'?'block':'none';var addrEl=document.getElementById('ob-lab-addr-fields');var isItl=this.value==='ITL';addrEl.style.display=isItl?'none':'grid';if(!isItl){addrEl.style.gridTemplateColumns='1fr 1fr';addrEl.style.gap='16px';addrEl.style.gridColumn='1/-1'}">
+                <option value="ITL">ITL - CPSC 认可实验室(SGS、BV、Intertek 等)</option>
+                <option value="LAB">LAB - 第三方实验室</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label>
+              <input type="text" placeholder="提交 CPSC 的唯一标识">
+            </div>
+            <div class="field" id="ob-lab-cpscid-1">
+              <label>CPSC 实验室编号 <span class="req">*</span></label>
+              <input type="text" placeholder="4位数字,如 SGS=0594">
+              <div class="field-hint">可在 cpsc.gov/cgi-bin/labsearch 查询</div>
+            </div>
+            <div id="ob-lab-addr-fields" style="display:none;grid-column:1/-1" class="lab-addr-fields-inner">
+              <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:198 Kezhu Road"></div>
+              <div class="field" style="grid-column:1/-1"><label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label><input type="text" placeholder="楼层、套间等补充信息"></div>
+              <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+              <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:Guangdong"></div>
+              <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:广州市"></div>
+              <div class="field"><label>邮政编码 <span class="req">*</span></label><input type="text" placeholder="如:510000"></div>
+              <div class="field"><label>联系电话 <span class="req">*</span></label><input type="text" placeholder="如:+86-20-88888888"></div>
+              <div class="field"><label>联系邮箱 <span class="req">*</span></label><input type="text" placeholder="机构联系邮箱"></div>
+            </div>
+          </div>
+          <div id="ob-lab-list"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="obAddItem('lab')">+ 添加检测机构</button>
+        </div>
+
+
+      </div>
+      <div class="ob-card-footer">
+        <button class="btn btn-outline btn-sm" onclick="obPrev(4)">← 上一步</button>
+        <button class="btn btn-success btn-lg" onclick="finishOnboarding()">✅ 完成初始化,进入工作台 →</button>
+      </div>
+    </div>
+  </div><!-- .ob-card -->
+
+</div><!-- #onboarding-shell -->
+
+
+<!-- ========================================================
+     DASHBOARD SHELL(日常工作台,onboarding 完成后显示)
+     ======================================================== -->
+<div id="dashboard-shell" style="display:none">
+
+  <!-- Top nav -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon">H</div>
+      <div class="logo-name">HGJ</div>
+      <div class="logo-sep">·</div>
+      <div class="logo-sub">CPSC 产品安全注册</div>
+    </div>
+    <div class="topbar-right">
+      <span class="company-name" id="acct-company-top">广州玩具贸易有限公司</span>
+      <div class="avatar">张</div>
+    </div>
+  </div>
+
+
+  <div class="app-shell">
+
+    <!-- Sidebar nav -->
+    <aside class="sidebar">
+
+      <!-- 进口商账号切换区 -->
+      <div class="sidebar-acct" id="sidebar-acct" onclick="toggleAcctDropdown(event)">
+        <div class="acct-badge" id="acct-badge-top" style="width:32px;height:32px;font-size:13px;flex-shrink:0">玩</div>
+        <div class="acct-info" style="flex:1;min-width:0">
+          <div class="acct-id" id="acct-id-top" style="font-size:13px">GZTOYTRADE</div>
+          <div style="font-size:11px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">广州玩具贸易有限公司</div>
+        </div>
+        <div class="acct-arrow" id="acct-arrow" style="font-size:10px;color:#94A3B8">▼</div>
+        <div class="acct-dropdown" id="acct-dropdown" style="top:calc(100% + 4px);left:0;right:0;min-width:unset">
+          <div class="acct-dropdown-header">切换进口商账号</div>
+          <div class="acct-item active" onclick="switchAcct('GZTOYTRADE','广州玩具贸易有限公司','玩',event)">
+            <div class="acct-badge" style="width:28px;height:28px;font-size:11px">玩</div>
+            <div class="acct-item-info">
+              <div class="acct-id">GZTOYTRADE</div>
+              <div class="acct-company">广州玩具贸易有限公司</div>
+            </div>
+            <div class="acct-active-dot"></div>
+          </div>
+          <div class="acct-item" onclick="switchAcct('GZFURNIMP','广州家具进口有限公司','家',event)">
+            <div class="acct-badge" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#7C3AED,#5B21B6)">家</div>
+            <div class="acct-item-info">
+              <div class="acct-id">GZFURNIMP</div>
+              <div class="acct-company">广州家具进口有限公司</div>
+            </div>
+          </div>
+          <div class="acct-add" onclick="goView('v-onboarding-add');closeAcctDropdown()">
+            + 添加新进口商账号
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">日常工作</div>
+        <button class="nav-item active" id="nav-products" onclick="goView('v-products')">
+          <span class="ni-icon">📦</span> 产品证书
+          <span class="ni-badge green">2</span>
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">账号管理</div>
+        <button class="nav-item" id="nav-billing" onclick="goView('v-billing')">
+          <span class="ni-icon">💳</span> 消费记录
+        </button>
+        <button class="nav-item" id="nav-settings" onclick="goView('v-settings')">
+          <span class="ni-icon">⚙️</span> 账号设置
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+
+      <!-- ===== VIEW: 产品证书列表 ===== -->
+      <div id="v-products" class="view active">
+        <div class="page-header">
+          <div>
+            <h1>产品证书</h1>
+            <p>每一件需要进入美国的消费品,都在这里提交一次</p>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="goView('v-new-cert')">+ 新建产品证书</button>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+          <div class="search-input"><span>🔍</span><input type="text" placeholder="产品英文名称"></div>
+          <div class="search-input"><span>🔍</span><input type="text" placeholder="Product ID"></div>
+          <span class="filter-divider"></span>
+          <span class="filter-label">状态</span>
+          <select class="filter-select">
+            <option>全部状态</option>
+            <option>认证中</option>
+            <option>已认证</option>
+            <option>异常</option>
+          </select>
+          <span class="filter-divider"></span>
+          <div class="filter-date">
+            <span>提交时间</span>
+            <input type="date">
+            <span>—</span>
+            <input type="date">
+          </div>
+        </div>
+        <div id="productGrid">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+              <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0">
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">产品英文名称</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">Product ID</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">Version ID</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">制造商</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">生产日期</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">最近测试日期</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">状态</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">提交时间</th>
+                <th style="padding:10px 16px;text-align:left;color:#64748B;font-weight:600">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="openDetail('pb')" style="cursor:pointer;border-bottom:1px solid #F1F5F9" onmouseenter="this.style.background='#F8FAFF'" onmouseleave="this.style.background=''">
+                <td style="padding:12px 16px;font-weight:500;color:#1A3A5C">Plush Bunny Toy 8-inch</td>
+                <td style="padding:12px 16px;font-family:ui-monospace,monospace;color:#1D4ED8">GZT-PB-0001</td>
+                <td style="padding:12px 16px;font-family:ui-monospace,monospace;color:#64748B">V1</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">汕头欢乐玩具制造有限公司</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">06/2026</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">06/01/2026</td>
+                <td style="padding:12px 16px"><span class="tag tg-amber">认证中</span></td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">2026-06-09</td>
+                <td style="padding:12px 16px;white-space:nowrap" onclick="event.stopPropagation()">
+                  <button class="btn btn-outline btn-sm" onclick="openDetail('pb')">查看</button>
+                  <button class="btn btn-outline btn-sm" onclick="window._currentDetailKey='pb';openEditMode()" title="两天内可修改">✏️ 修改</button>
+                  <button class="btn btn-outline btn-sm" onclick="window._currentDetailKey='pb';openNewVersion()">+ 新版本</button>
+                  <button class="copy-btn-inline" style="margin-left:2px" onclick="copyRowIds(this,'GZTOYTRADE','GZT-PB-0001','V1')">📋 复制凭证</button>
+                </td>
+              </tr>
+              <tr onclick="openDetail('wp')" style="cursor:pointer;border-bottom:1px solid #F1F5F9" onmouseenter="this.style.background='#F8FAFF'" onmouseleave="this.style.background=''">
+                <td style="padding:12px 16px;font-weight:500;color:#1A3A5C">Wooden Puzzle Set</td>
+                <td style="padding:12px 16px;font-family:ui-monospace,monospace;color:#1D4ED8">GZT-WP-0001</td>
+                <td style="padding:12px 16px;font-family:ui-monospace,monospace;color:#64748B">V1</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">汕头欢乐玩具制造有限公司</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">05/2026</td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">04/15/2026</td>
+                <td style="padding:12px 16px"><span class="tag tg-green">已认证</span></td>
+                <td style="padding:12px 16px;color:#64748B;font-size:12px">2026-05-20</td>
+                <td style="padding:12px 16px;white-space:nowrap" onclick="event.stopPropagation()">
+                  <button class="btn btn-outline btn-sm" onclick="openDetail('wp')">查看</button>
+                  <button class="btn btn-outline btn-sm" onclick="window._currentDetailKey='wp';openNewVersion()">+ 新版本</button>
+                  <button class="copy-btn-inline" style="margin-left:2px" onclick="copyRowIds(this,'GZTOYTRADE','GZT-WP-0001','V1')">📋 复制凭证</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 16px;border-top:1px solid #F1F5F9">
+            <button class="btn btn-outline btn-sm" onclick="goView('v-new-cert')">+ 提交新产品证书</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== VIEW: 新建产品证书(表单)===== -->
+      <div id="v-new-cert" class="view">
+        <div class="page-header">
+          <div>
+            <h1>新建产品证书</h1>
+            <p>系统将以当前账号提交到 CPSC · 当前账号:<strong id="cert-current-acct">GZTOYTRADE</strong></p>
+          </div>
+          <button class="btn btn-outline" onclick="goView('v-products')">← 返回列表</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>产品基本信息</h3></div>
+          <div class="card-body">
+            <div class="fg c2">
+              <div class="field">
+                <label>产品英文名称 <span class="en-req">EN</span> <span class="req">*</span></label>
+                <input type="text" placeholder="如:Plush Bunny Toy 8-inch">
+                <div class="field-hint">用于 CPSC 登记,建议与产品标签保持一致</div>
+              </div>
+              <div class="field">
+                <label>证书类型 <span class="req">*</span></label>
+                <select>
+                  <option>CPC - 儿童产品证书(14岁以下)</option>
+                  <option>GCC - 通用合格证书(成人产品)</option>
+                </select>
+                <div class="field-hint">不确定?玩具类一般选 CPC</div>
+              </div>
+              <div class="field" style="grid-column:1/-1">
+                <label>Product ID <span class="req">*</span></label>
+                <div id="cert-identifiers-list">
+                  <div class="ident-row" style="display:flex;gap:8px;margin-bottom:6px">
+                    <select class="ident-type" style="width:130px;flex-shrink:0">
+                      <option>GTIN</option>
+                      <option selected>Model #</option>
+                      <option>Serial #</option>
+                      <option>UPC</option>
+                      <option>SKU</option>
+                      <option>Registered #</option>
+                      <option>Alternate ID</option>
+                    </select>
+                    <input type="text" class="ident-value" placeholder="如 GZT-PB-0002" maxlength="19" style="flex:1;border:1px solid #E2E8F0;border-radius:6px;padding:7px 10px;font-size:13px">
+                    <button type="button" onclick="removeIdentRow(this)" style="flex-shrink:0;background:none;border:1px solid #FECACA;border-radius:6px;padding:6px 10px;color:#EF4444;cursor:pointer;font-size:13px" title="删除">×</button>
+                  </div>
+                </div>
+                <button type="button" onclick="addIdentRow()" style="margin-top:4px;background:#F8FAFC;border:1px dashed #CBD5E1;border-radius:6px;padding:5px 14px;font-size:12px;color:#64748B;cursor:pointer;width:100%">+ 添加一个ID</button>
+                <div class="field-hint">可添加多个编号类型;每个编号最多 19 字符</div>
+              </div>
+              <div class="field">
+                <label>Version ID <span class="req">*</span></label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input type="text" id="cert-version-id" value="V1" placeholder="V1" maxlength="19" style="flex:1;font-family:ui-monospace,monospace">
+                  <button type="button" onclick="generateVersionId()" style="flex-shrink:0;background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">🔀 自动生成</button>
+                </div>
+                <div class="field-hint">首次可填 V1,或点击自动生成唯一编号(如 F62C740B)</div>
+              </div>
+              <div class="field">
+                <label>生产日期 <span class="req">*</span></label>
+                <input type="month" id="cert-produce-date" onchange="syncProduceDate(this)">
+                <input type="hidden" id="cert-produce-date-fmt">
+                <div class="field-hint">选择年月即可,自动转换为 CPSC 格式(MM/YYYY)</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>制造商 & 检测信息</h3></div>
+          <div class="card-body">
+            <div class="fg c2">
+              <div class="field">
+                <label>制造商 <span class="req">*</span></label>
+                <select id="cert-mfr-select" onchange="toggleNewPartyForm('mfr', this.value)">
+                  <option value="existing">汕头欢乐玩具制造有限公司(默认)</option>
+                  <option value="new">+ 新增制造商</option>
+                </select>
+              </div>
+              <div id="new-mfr-form" style="display:none;grid-column:1/-1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px 16px;margin-top:-6px">
+                <div style="font-size:12px;font-weight:700;color:#1A3A5C;margin-bottom:10px;padding-left:6px;border-left:2px solid #3B82F6">新增制造商</div>
+                <div class="fg c2">
+                  <div class="field"><label>制造商名称 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如 Shantou Happy Toys Manufacturing Co., Ltd."></div>
+                  <div class="field"><label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="提交 CPSC 的唯一标识"></div>
+                  <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如 168 Chenghai Road"></div>
+                  <div class="field" style="grid-column:1/-1"><label>详细地址 <span class="en-req">EN</span></label><input type="text" placeholder="楼层、套间等"></div>
+                  <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+                  <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如 Guangdong"></div>
+                  <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如 Shantou"></div>
+                  <div class="field"><label>邮政编码 <span class="req">*</span></label><input type="text" placeholder="如 515000"></div>
+                  <div class="field"><label>联系电话</label><input type="text" placeholder="+86-754-88888888"></div>
+                  <div class="field"><label>联系邮箱</label><input type="text" placeholder="工厂联系邮箱"></div>
+                </div>
+              </div>
+              <div class="field">
+                <label>检测机构 <span class="req">*</span></label>
+                <select id="cert-lab-select">
+                  <option value="existing">SGS-CSTC 标准技术服务(默认)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>最近测试日期 <span class="req">*</span></label>
+                <input type="date" id="cert-last-test-date" onchange="syncLastTestDate(this)">
+                <input type="hidden" id="cert-last-test-date-fmt">
+                <div class="field-hint">选择日期即可,自动转换为 CPSC 格式(MM/DD/YYYY)</div>
+              </div>
+
+            </div>
+            <div style="margin-top:12px">
+              <div id="report-upload-zone" style="border:2px dashed #CBD5E1;border-radius:8px;padding:14px;text-align:center;color:#94A3B8;font-size:13px;cursor:pointer"
+                   onclick="document.getElementById('cert-report-file').click()"
+                   onmouseover="this.style.borderColor='#3B82F6';this.style.color='#3B82F6'"
+                   onmouseout="this.style.borderColor='#CBD5E1';this.style.color='#94A3B8'">
+                📎 上传测试报告 PDF(SGS / TÜV / Intertek 等)<span style="display:block;font-size:11px;margin-top:3px">选填,建议存档</span>
+              </div>
+              <input type="file" id="cert-report-file" accept=".pdf" style="display:none" onchange="onReportSelected(this)">
+              <div id="report-file-display" style="display:none;margin-top:8px;padding:8px 12px;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:6px;font-size:12px;color:#0369A1;display:flex;align-items:center;gap:6px">
+                <span id="report-file-name" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+                <button type="button" onclick="removeReportFile()" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:16px;line-height:1">×</button>
+              </div>
+            </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>适用法规标准</h3>
+            <span style="font-size:12px;color:#94A3B8">手动输入测试报告上的 Citation Code</span>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label>添加法规标准 <span class="req">*</span></label>
+              <div style="display:flex;gap:8px;align-items:flex-end">
+                <input type="text" id="citation-input" placeholder="如 1215" maxlength="4" style="width:160px;text-align:center;font-family:ui-monospace,monospace;font-size:15px;border:1px solid #E2E8F0;border-radius:6px;padding:8px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();addCitationManual()}">
+                <button type="button" onclick="addCitationManual()" style="background:#3B82F6;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">+ 添加</button>
+              </div>
+              <div class="field-hint">请对照测试报告上的 Citation Code 手动输入（四位数字，如 1215、1303），可添加多个</div>
+            </div>
+            <div id="citation-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;min-height:32px">
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid #E8EEF6">
+              <div class="field" style="max-width:360px">
+                <label>证书责任方(Point of Contact)</label>
+                <select>
+                  <option value="IMPORTER" selected>进口商(Importer)- 最常用</option>
+                  <option value="MANUFACTURER">制造商(Manufacturer)</option>
+                  <option value="LABORATORY">检测机构(Laboratory)</option>
+                  <option value="BROKER">报关行(Broker)</option>
+                  <option value="OTHER">其他(Other)</option>
+                </select>
+                <div class="field-hint">指明谁保存测试记录,跨境卖家一般选「进口商」</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <span class="ab-hint">填写完成后提交 → 系统自动预检 → 提交 CPSC → 返回三个编号</span>
+          <div class="ab-btns">
+<button class="btn btn-primary btn-lg" id="submitBtn" onclick="openPayModal('cert')">✅ 提交产品证书 →</button>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- ===== VIEW: 产品详情 + 交付凭证 ===== -->
+      <div id="v-product-detail" class="view">
+        <div class="page-header">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <button class="btn btn-outline btn-sm" onclick="goView('v-products')">← 返回列表</button>
+              <h1 id="detail-name" style="font-size:18px;margin:0">产品名称</h1>
+              <span id="detail-status" class="tag tg-amber">认证中</span>
+            </div>
+            <div style="font-size:12px;color:#94A3B8;margin-top:4px" id="detail-submitted">提交于 -</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" id="detail-edit-btn" style="display:none" onclick="openEditMode()">✏️ 修改此版本</button>
+            <button class="btn btn-primary btn-sm" id="detail-new-version-btn" onclick="openNewVersion()">+ 创建新版本</button>
+          </div>
+        </div>
+
+        <!-- 产品信息(只读展示,所有字段)-->
+        <div class="card">
+          <div class="card-head">
+            <h3>📦 产品基本信息</h3>
+            <span id="detail-id" style="font-family:ui-monospace,monospace;font-size:12px;color:#64748B"></span>
+          </div>
+          <div class="card-body">
+            <div class="fg c2">
+              <div class="field"><label>产品英文名称</label><input id="detail-name-en" readonly></div>
+              <div class="field"><label>证书类型</label><input id="detail-cert-type" readonly></div>
+              <div class="field"><label>Product ID</label><input id="detail-pid" readonly style="font-family:ui-monospace,monospace;color:#1D4ED8"></div>
+              <div class="field"><label>Version ID</label><input id="detail-vid" readonly style="font-family:ui-monospace,monospace"></div>
+              <div class="field"><label>生产日期</label><input id="detail-produce-date" readonly></div>
+              <div class="field"><label>最近测试日期</label><input id="detail-last-test" readonly></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>🏭 制造商 &amp; 检测信息</h3></div>
+          <div class="card-body">
+            <div class="fg c2">
+              <div class="field"><label>制造商</label><input id="detail-mfr" readonly></div>
+              <div class="field"><label>检测机构</label><input value="SGS-CSTC 标准技术服务" readonly></div>
+              <div class="field" style="grid-column:1/-1">
+                <label>适用法规标准</label>
+                <div id="detail-citation-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+              </div>
+              <div class="field"><label>证书责任方</label><input id="detail-poc" readonly></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>📄 检测报告</h3></div>
+          <div class="card-body">
+            <div id="detail-report-show" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px">
+              <span style="font-size:20px">📄</span>
+              <span id="detail-report-name" style="flex:1;font-size:13px;color:#0369A1;font-weight:500">SGS_Test_Report_GZT-PB-0001.pdf</span>
+              <button class="btn btn-outline btn-sm" onclick="alert('演示中：下载检测报告')">⬇ 下载</button>
+            </div>
+            <div id="detail-report-empty" style="display:none;padding:10px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#94A3B8">未上传检测报告</div>
+          </div>
+        </div>
+
+        <!-- 交付凭证 -->
+        <div id="detail-voucher-ready" style="display:none">
+          <div class="card">
+            <div class="card-head"><h3>🎫 交付凭证</h3><span style="font-size:12px;color:#10B981">✅ 认证完成,凭证可用</span></div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+                <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:12px;text-align:center">
+                  <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:4px">CERTIFIER ID</div>
+                  <div id="vc-certifier" style="font-family:ui-monospace,monospace;font-size:15px;font-weight:800;color:#0C4A6E">GZTOYTRADE</div>
+                </div>
+                <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:12px;text-align:center">
+                  <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:4px">PRODUCT ID</div>
+                  <div id="vc-pid" style="font-family:ui-monospace,monospace;font-size:15px;font-weight:800;color:#0C4A6E">-</div>
+                </div>
+                <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:12px;text-align:center">
+                  <div style="font-size:10px;color:#0369A1;font-weight:700;margin-bottom:4px">VERSION ID</div>
+                  <div id="vc-vid" style="font-family:ui-monospace,monospace;font-size:15px;font-weight:800;color:#0C4A6E">-</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px">
+                  <div style="font-size:12px;font-weight:700;color:#1A3A5C;margin-bottom:8px">🛃 报关行如何使用这三个 ID</div>
+                  <div style="font-size:12px;color:#64748B;line-height:1.8">在 ACE 申报系统中,选择 <strong>Reference PGA Message Set</strong> 模式,填入以上三个编号即可完成 CPSC 合规申报。</div>
+                </div>
+                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px">
+                  <div style="font-size:12px;font-weight:700;color:#1A3A5C;margin-bottom:8px">🔄 什么时候需要更新</div>
+                  <div style="font-size:12px;color:#64748B;line-height:1.8">产品配方、原材料、生产工艺或检测结果发生变化时,需提交新版本证书(Version ID 递增)。</div>
+                </div>
+              </div>
+              <div style="margin-top:14px;text-align:center">
+                <button class="btn btn-primary" onclick="copyDetailIds()">📋 复制三个编号</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="detail-voucher-pending" style="display:none">
+          <div class="card">
+            <div class="card-head"><h3>🎫 交付凭证</h3></div>
+            <div class="card-body" style="text-align:center;padding:30px">
+              <div style="font-size:32px;margin-bottom:10px">⏳</div>
+              <div style="font-size:14px;font-weight:600;color:#1A3A5C;margin-bottom:6px">认证进行中</div>
+              <div style="font-size:12px;color:#94A3B8">预计 1-3 个工作日完成后自动解锁</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== VIEW: 账号设置 ===== -->
+      <div id="v-settings" class="view">
+        <div class="page-header">
+          <div>
+            <h1>账号设置</h1>
+            <p>修改后下次提交产品证书时自动带入</p>
+          </div>
+        </div>
+
+        <!-- 账号信息 -->
+        <div class="card">
+          <div class="card-head">
+            <h3>📖 账号信息</h3>
+          </div>
+          <div class="card-body">
+            <div class="fg c2">
+              <div class="field">
+                <label>账号 ID(Certifier ID)</label>
+                <input readonly id="settings-acct-id" value="GZTOYTRADE">
+              </div>
+              <div class="field">
+                <label>邮箱</label>
+                <input readonly value="compliance@guangzhoutoy.com">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 制造商 -->
+        <div class="card">
+          <div class="card-head">
+            <h3>🏭 制造商列表</h3>
+            <button class="btn btn-outline btn-sm" onclick="addSettingItem('mfr')">+ 添加制造商</button>
+          </div>
+          <div class="card-body">
+            <div class="settings-grid" id="settings-mfr-list">
+              <div class="config-block" id="init-mfr-1" style="position:relative">
+                <h4><span class="status-dot" style="background:#22C55E"></span> 汕头欢乐玩具制造有限公司</h4>
+                <div class="fg c2">
+                  <div class="field" data-req><label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label><input value="storm" readonly><div class="field-hint" style="font-size:10px;color:#94A3B8">提交给 CPSC 的唯一标识,勿轻易修改</div></div>
+                  <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input value="168 Chenghai Road" readonly></div>
+                  <div class="field" style="grid-column:1/-1"><label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label><input value="" placeholder="楼层、套间等" readonly></div>
+                  <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%" disabled><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+                  <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input value="Guangdong" readonly></div>
+                  <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input value="Shantou" readonly></div>
+                  <div class="field"><label>邮政编码 <span class="req">*</span></label><input value="515000" readonly></div>
+                  <div class="field"><label>联系电话 <span class="req">*</span></label><input value="+86-754-88888888" readonly></div>
+                  <div class="field"><label>联系邮箱 <span class="req">*</span></label><input value="factory@happytoys.cn" readonly></div>
+                </div>
+                <div id="init-mfr-1-btnrow" style="margin-top:10px">
+                  <button onclick="_editStaticBlock('init-mfr-1')" style="background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">编辑</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 检测机构 -->
+        <div class="card">
+          <div class="card-head">
+            <h3>🔬 检测机构列表</h3>
+            <button class="btn btn-outline btn-sm" onclick="addSettingItem('lab')">+ 添加检测机构</button>
+          </div>
+          <div class="card-body">
+            <div class="settings-grid" id="settings-lab-list">
+              <div class="config-block" id="init-lab-1" style="position:relative">
+                <h4><span class="status-dot" style="background:#22C55E"></span> SGS-CSTC 标准技术服务</h4>
+                <div class="fg c2">
+                  <div class="field" style="grid-column:1/-1"><label>机构类型</label><select disabled onchange="var a=this.closest('.config-block').querySelector('.lab-addr-fields');var isITL=this.options[this.selectedIndex].text.includes('ITL');a.style.display=isITL?'none':'grid';if(!isITL){a.style.gridTemplateColumns='1fr 1fr';a.style.gap='16px';a.style.gridColumn='1/-1'}"><option selected>ITL - CPSC 认可实验室</option><option>LAB - 第三方实验室</option></select></div>
+                  <div class="field" data-req><label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label><input placeholder="提交 CPSC 的唯一标识" value="SGS-CSTC" readonly></div>
+                  <div class="field" data-req><label>CPSC 实验室编号 <span style="font-size:11px;color:#94A3B8">(ITL必填,4位)</span><span class="req">*</span></label><input placeholder="如 0594" value="" readonly></div>
+                  <div class="lab-addr-fields" style="display:none;grid-column:1/-1" class="lab-addr-fields-inner">
+                    <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input value="198 Kezhu Road, Guangzhou Science City" readonly></div>
+                    <div class="field" style="grid-column:1/-1"><label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label><input value="" placeholder="楼层、套间等" readonly></div>
+                    <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%" disabled><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+                    <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input value="Guangdong" readonly></div>
+                    <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input value="Guangzhou" readonly></div>
+                    <div class="field"><label>邮政编码 <span class="req">*</span></label><input value="510000" readonly></div>
+                    <div class="field"><label>联系电话 <span class="req">*</span></label><input value="+86-20-82300566" readonly></div>
+                    <div class="field"><label>联系邮箱 <span class="req">*</span></label><input value="sgs.guangzhou@sgs.com" readonly></div>
+                  </div>
+                </div>
+                <div id="init-lab-1-btnrow" style="margin-top:10px">
+                  <button onclick="_editStaticBlock('init-lab-1')" style="background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">编辑</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div><!-- v-settings -->
+
+      <!-- ===== VIEW: 消费记录 ===== -->
+      <div id="v-billing" class="view">
+        <div class="page-header">
+          <div>
+            <h1>消费记录</h1>
+            <p>查看服务费用明细及支付状态</p>
+          </div>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+          <span class="filter-label">消费类型</span>
+          <select class="filter-select"><option>全部类型</option><option>代注册费用</option><option>证书申报费</option></select>
+          <span class="filter-divider"></span>
+          <span class="filter-label">支付方式</span>
+          <select class="filter-select"><option>全部支付方式</option><option>海币支付</option><option>账期宝支付</option><option>线下支付</option></select>
+          <span class="filter-divider"></span>
+          <div class="filter-date">
+            <span>消费时间</span>
+            <input type="date">
+            <span>—</span>
+            <input type="date">
+          </div>
+          <button class="btn btn-outline btn-sm filter-spacer">📥 导出</button>
+        </div>
+
+        <!-- 记录列表 -->
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="border-bottom:1px solid #E2E8F0;background:#F8FAFC">
+                  <th style="padding:10px 16px;text-align:left;font-weight:600;color:#64748B;white-space:nowrap">消费类型</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:600;color:#64748B;white-space:nowrap">关联产品 / 服务</th>
+                  <th style="padding:10px 16px;text-align:right;font-weight:600;color:#64748B;white-space:nowrap">金额</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:600;color:#64748B;white-space:nowrap">支付方式</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:600;color:#64748B;white-space:nowrap">状态</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:600;color:#64748B;white-space:nowrap">消费时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #F1F5F9">
+                  <td style="padding:12px 16px;color:#1A3A5C;font-weight:500">证书申报费</td>
+                  <td style="padding:12px 16px;color:#64748B">Plush Bunny Toy 8-inch</td>
+                  <td style="padding:12px 16px;text-align:right;font-weight:600;color:#1A3A5C">¥ 300.00</td>
+                  <td style="padding:12px 16px;color:#64748B">海币支付</td>
+                  <td style="padding:12px 16px"><span class="tag tg-green">已支付</span></td>
+                  <td style="padding:12px 16px;color:#64748B;white-space:nowrap">2026/06/17 09:32</td>
+                </tr>
+                <tr style="border-bottom:1px solid #F1F5F9">
+                  <td style="padding:12px 16px;color:#1A3A5C;font-weight:500">证书申报费</td>
+                  <td style="padding:12px 16px;color:#64748B">Wooden Puzzle Set</td>
+                  <td style="padding:12px 16px;text-align:right;font-weight:600;color:#1A3A5C">¥ 300.00</td>
+                  <td style="padding:12px 16px;color:#64748B">账期宝支付</td>
+                  <td style="padding:12px 16px"><span class="tag tg-green">已支付</span></td>
+                  <td style="padding:12px 16px;color:#64748B;white-space:nowrap">2026/06/17 14:18</td>
+                </tr>
+                <tr style="border-bottom:1px solid #F1F5F9">
+                  <td style="padding:12px 16px;color:#1A3A5C;font-weight:500">代注册费用</td>
+                  <td style="padding:12px 16px;color:#64748B">CPSC 账号注册</td>
+                  <td style="padding:12px 16px;text-align:right;font-weight:600;color:#1A3A5C">¥ 500.00</td>
+                  <td style="padding:12px 16px;color:#64748B">海币支付</td>
+                  <td style="padding:12px 16px"><span class="tag tg-green">已支付</span></td>
+                  <td style="padding:12px 16px;color:#64748B;white-space:nowrap">2026/05/10 10:22</td>
+                </tr>
+                <tr style="border-bottom:1px solid #F1F5F9">
+                  <td style="padding:12px 16px;color:#1A3A5C;font-weight:500">证书申报费</td>
+                  <td style="padding:12px 16px;color:#64748B">Wooden Puzzle Set</td>
+                  <td style="padding:12px 16px;text-align:right;font-weight:600;color:#1A3A5C">¥ 300.00</td>
+                  <td style="padding:12px 16px;color:#64748B">账期宝支付</td>
+                  <td style="padding:12px 16px"><span class="tag tg-green">已支付</span></td>
+                  <td style="padding:12px 16px;color:#64748B;white-space:nowrap">2026/06/15 16:03</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- v-billing -->
+
+
+    </div><!-- .main-content -->
+  </div><!-- .app-shell -->
+</div><!-- #dashboard-shell -->
+
+
+<!-- ===== MODAL: 更新密钥 ===== -->
+<div class="modal-bg" id="modal-reauth">
+  <div class="modal">
+    <h3>🔁 更新 API 密钥</h3>
+    <p>去 CPSC 后台重新生成 Token 和 Secret,然后粘贴到下面。</p>
+    <div class="field" style="margin-bottom:12px">
+      <label>新的 API Token <span class="req">*</span></label>
+      <textarea placeholder="粘贴新 Token" style="min-height:70px;font-family:ui-monospace,monospace;font-size:12px"></textarea>
+      <div class="field-hint">🔒 提交后加密保存</div>
+    </div>
+    <div class="field" style="margin-bottom:18px">
+      <label>新的 API Secret <span class="req">*</span></label>
+      <input type="password" placeholder="新 Secret">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="document.getElementById('modal-reauth').classList.remove('open')">取消</button>
+      <button class="btn btn-primary">测试并保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: 提交成功 ===== -->
+<div class="modal-bg" id="modal-success">
+  <div class="modal">
+    <div class="modal-success-icon">🎉</div>
+    <h3 style="text-align:center;margin-bottom:8px">提交成功!</h3>
+    <p style="text-align:center">产品证书已成功进入 CPSC Product Registry</p>
+    <div class="id-result-box">
+      <div style="font-size:12px;color:#64748B;margin-bottom:2px">发给报关行的三个编号</div>
+      <div class="id-result-chips">
+        <div class="id-result-chip">
+          <div class="irc-lbl">Certifier ID</div>
+          <div class="irc-val">GZTOYTRADE</div>
+        </div>
+        <div class="id-result-chip">
+          <div class="irc-lbl">Product ID</div>
+          <div class="irc-val">GZT-NEW-001</div>
+        </div>
+        <div class="id-result-chip">
+          <div class="irc-lbl">Version ID</div>
+          <div class="irc-val">V1</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeSuccess()">继续提交其他产品</button>
+      <button class="btn btn-success" onclick="goDelivery()">查看交付凭证 →</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ===== ONBOARDING =====
+let obStep = 1;
+
+function obNext(from) {
+  if (from === 1) {
+    // step1 -> step2: 确认信息,直接切换面板
+    document.getElementById('ob-panel-1').classList.remove('active');
+    document.getElementById('ob-panel-2').classList.add('active');
+    document.getElementById('ob-tab-1').className = 'ob-step done';
+    document.getElementById('ob-tab-2').className = 'ob-step active';
+    obStep = 2;
+    return;
+  }
+  const btn = event.target;
+  btn.textContent = '处理中...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✅ 确认账号信息，继续';
+    btn.disabled = false;
+    const next = from + 1;
+    document.getElementById('ob-panel-' + from).classList.remove('active');
+    document.getElementById('ob-panel-' + next).classList.add('active');
+    document.getElementById('ob-tab-' + from).className = 'ob-step done';
+    document.getElementById('ob-tab-' + next).className = 'ob-step active';
+    obStep = next;
+  }, 900);
+}
+
+function obPrev(from) {
+  const prev = from - 1;
+  document.getElementById('ob-panel-' + from).classList.remove('active');
+  document.getElementById('ob-panel-' + prev).classList.add('active');
+  document.getElementById('ob-tab-' + from).className = 'ob-step';
+  document.getElementById('ob-tab-' + prev).className = 'ob-step active';
+  obStep = prev;
+}
+
+function finishOnboarding() {
+  const btn = (typeof event !== 'undefined' && event && event.target && event.target.tagName === 'BUTTON') ? event.target : null;
+  if (btn) { btn.textContent = '初始化中...'; btn.disabled = true; }
+  setTimeout(() => {
+    document.getElementById('onboarding-shell').classList.remove('active');
+    document.getElementById('onboarding-shell').style.display = 'none';
+    document.getElementById('dashboard-shell').style.display = 'block';
+  }, 1000);
+}
+
+// ===== VIEW TOGGLE (card / list) =====
+function setView(mode) {
+  const grid = document.getElementById('productGrid');
+  const btnCard = document.getElementById('btn-card-view');
+  const btnList = document.getElementById('btn-list-view');
+  if (mode === 'list') {
+    grid.classList.add('list-mode');
+    btnList.classList.add('active');
+    btnCard.classList.remove('active');
+  } else {
+    grid.classList.remove('list-mode');
+    btnCard.classList.add('active');
+    btnList.classList.remove('active');
+  }
+}
+
+// ===== DASHBOARD NAV =====
+
+
+
+// ===== ACCOUNT SWITCHER =====
+const ACCOUNTS = {
+  'GZTOYTRADE': { company: '广州玩具贸易有限公司', abbr: '玩', email: 'compliance@guangzhoutoy.com', color: 'linear-gradient(135deg,#3B82F6,#1D4ED8)' },
+  'GZFURNIMP':  { company: '广州家具进口有限公司',  abbr: '家', email: 'import@gzfurnimp.com',        color: 'linear-gradient(135deg,#7C3AED,#5B21B6)' },
+};
+let currentAcct = 'GZTOYTRADE';
+
+function toggleAcctDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('acct-dropdown');
+  const open = dd.classList.toggle('open');
+  document.getElementById('acct-arrow').style.transform = open ? 'rotate(180deg)' : '';
+  if (open) { setTimeout(() => document.addEventListener('click', closeAcctDropdown, {once:true}), 0); }
+}
+function closeAcctDropdown() {
+  document.getElementById('acct-dropdown').classList.remove('open');
+  document.getElementById('acct-arrow').style.transform = '';
+}
+function switchAcct(id, company, abbr, e) {
+  if (e) e.stopPropagation();
+  currentAcct = id;
+  const info = ACCOUNTS[id];
+  // 更新顶部切换器
+  document.getElementById('acct-id-top').textContent = id;
+  document.getElementById('acct-company-top').textContent = info.company;
+  document.getElementById('acct-badge-top').textContent = info.abbr;
+  document.getElementById('acct-badge-top').style.background = info.color;
+  document.querySelector('.company-name').textContent = info.company;
+  // 更新下拉 active 状态
+  document.querySelectorAll('.acct-item').forEach(el => {
+    el.classList.toggle('active', el.textContent.includes(id));
+    const dot = el.querySelector('.acct-active-dot');
+    if (dot) dot.remove();
+    if (el.classList.contains('active')) {
+      const d = document.createElement('div'); d.className = 'acct-active-dot'; el.appendChild(d);
+    }
+  });
+  // 更新各处账号 ID 显示
+  const els = ['cert-current-acct','settings-acct-id','settings-acct-id-main','vc-certifier'];
+  els.forEach(eid => { try { const el = document.getElementById(eid); if(el){ if(el.tagName==='INPUT') el.value=id; else el.textContent=id; } } catch(e){} });
+  try { if (document.getElementById('settings-acct-email')) document.getElementById('settings-acct-email').value = info.email; } catch(e){}
+  // 顶部标题切换提示
+  showAcctSwitchToast(id, info.company);
+  closeAcctDropdown();
+}
+function showAcctSwitchToast(id, company) {
+  let toast = document.getElementById('acct-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'acct-toast';
+    toast.style.cssText = 'position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#1A3A5C;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = '已切换到 ' + id + ' · ' + company;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+
+function toggleNewPartyForm(type, val) {
+  const formId = type === 'mfr' ? 'new-mfr-form' : 'new-lab-form';
+  document.getElementById(formId).style.display = val === 'new' ? 'block' : 'none';
+}
+
+function addCitationManual() {
+  var input = document.getElementById('citation-input');
+  var code = input.value.trim();
+  if (!code) return;
+  if (!/^\d{4}$/.test(code)) { input.style.borderColor = '#EF4444'; setTimeout(function(){ input.style.borderColor = ''; }, 1500); return; }
+  var container = document.getElementById('citation-tags');
+  if (container.querySelector('[data-code="' + code + '"]')) { input.value = ''; return; }
+  var tag = document.createElement('span');
+  tag.className = 'citation-tag';
+  tag.dataset.code = code;
+  tag.innerHTML = '<code>' + code + '</code> <button onclick="removeCitation(this)" type="button">&times;</button>';
+  container.appendChild(tag);
+  input.value = '';
+  input.focus();
+}
+
+function removeCitation(btn) {
+  btn.closest('.citation-tag').remove();
+}
+
+// ===== 检测报告上传 =====
+function onReportSelected(input) {
+  var file = input.files[0];
+  if (!file) return;
+  document.getElementById('report-file-name').textContent = '📄 ' + file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+  document.getElementById('report-file-display').style.display = 'flex';
+  document.getElementById('report-upload-zone').style.display = 'none';
+}
+function removeReportFile() {
+  document.getElementById('cert-report-file').value = '';
+  document.getElementById('report-file-display').style.display = 'none';
+  document.getElementById('report-upload-zone').style.display = 'block';
+}
+
+// 生产日期: type=month 输出 YYYY-MM 转为 MM/YYYY
+function syncProduceDate(el) {
+  if (!el.value) return;
+  const [y, m] = el.value.split('-');
+  document.getElementById('cert-produce-date-fmt').value = m + '/' + y;
+}
+// 最近测试日期: type=date 输出 YYYY-MM-DD 转为 MM/DD/YYYY
+function syncLastTestDate(el) {
+  if (!el.value) return;
+  const [y, m, d] = el.value.split('-');
+  document.getElementById('cert-last-test-date-fmt').value = m + '/' + d + '/' + y;
+}
+
+function generateVersionId() {
+  const chars = '0123456789ABCDEF';
+  let id = '';
+  for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * 16)];
+  document.getElementById('cert-version-id').value = id;
+}
+
+function goView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  // Update sidebar active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navMap = {
+    'v-products': 'nav-products',
+    'v-new-cert': 'nav-products',
+    'v-product-detail': 'nav-products',
+    'v-settings': 'nav-settings',
+    'v-billing': 'nav-billing',
+  };
+  const navId = navMap[id];
+  if (navId) document.getElementById(navId).classList.add('active');
+
+  // Show/hide bottom action bar
+  const bar = document.querySelector('.action-bar');
+  if (bar) bar.style.display = id === 'v-new-cert' ? 'flex' : 'none';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== CERT SUBMIT =====
+function submitCert() {
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '⏳ 预检中...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '⏳ 提交中...';
+    setTimeout(() => {
+      btn.textContent = '✅ 提交产品证书 →';
+      btn.disabled = false;
+      document.getElementById('modal-success').classList.add('open');
+    }, 1000);
+  }, 800);
+}
+
+
+
+function closeSuccess() {
+  document.getElementById('modal-success').classList.remove('open');
+  goView('v-new-cert');
+}
+
+function goDelivery() {
+  document.getElementById('modal-success').classList.remove('open');
+  openDetail('new');
+}
+
+// Product data map
+const PRODUCTS = {
+  pb: {
+    name: '毛绒兔子玩具 8寸',
+    nameEn: 'Plush Bunny Toy 8-inch',
+    id: 'GZT-PB-0001 · V1', pid: 'GZT-PB-0001', vid: 'V1',
+    status: 'tg-amber', statusText: '认证中',
+    submitted: '提交于 2026-06-09', submittedDate: '2026-06-09',
+    mfr: '汕头欢乐玩具制造有限公司',
+    mfrAlt: 'storm',
+    produceDate: '06/2026',
+    lastTestDate: '06/01/2026',
+    certType: 'CPC',
+    lab: 'SGS-CSTC',
+    citations: ['1215', '1303'],
+    poc: 'IMPORTER',
+    canDeliver: true,
+    canEdit: true,
+    reportName: 'SGS_Test_Report_GZT-PB-0001.pdf',
+  },
+  wp: {
+    name: '木制拼图套装',
+    nameEn: 'Wooden Puzzle Set',
+    id: 'GZT-WP-0001 · V1', pid: 'GZT-WP-0001', vid: 'V1',
+    status: 'tg-green', statusText: '认证完成',
+    submitted: '提交于 2026-05-20', submittedDate: '2026-05-20',
+    mfr: '汕头欢乐玩具制造有限公司',
+    mfrAlt: 'storm',
+    produceDate: '05/2026',
+    lastTestDate: '04/15/2026',
+    certType: 'CPC',
+    lab: 'SGS-CSTC',
+    citations: ['1215', '1500'],
+    poc: 'IMPORTER',
+    canDeliver: true,
+    canEdit: false,
+    reportName: 'SGS_Test_Report_GZT-WP-0001.pdf',
+  },
+};
+
+function openDetail(key) {
+  const p = PRODUCTS[key] || PRODUCTS.pb;
+  // 基本信息
+  document.getElementById('detail-name').textContent = p.name;
+  document.getElementById('detail-id').textContent = p.id;
+  const statusEl = document.getElementById('detail-status');
+  statusEl.textContent = p.statusText;
+  statusEl.className = 'tag ' + p.status;
+  document.getElementById('detail-submitted').textContent = p.submitted;
+  // 填充详情表单字段
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  setVal('detail-name-en', p.nameEn);
+  setVal('detail-cert-type', p.certType);
+  setVal('detail-pid', p.pid);
+  setVal('detail-vid', p.vid);
+  setVal('detail-produce-date', p.produceDate);
+  setVal('detail-mfr', p.mfr);
+  setVal('detail-last-test', p.lastTestDate);
+  setVal('detail-poc', p.poc);
+  // 法规标准 tags
+  const tagsEl = document.getElementById('detail-citation-tags');
+  if (tagsEl) tagsEl.innerHTML = (p.citations||[]).map(c => `<span class="tag tg-blue" style="font-size:11px">${c}</span>`).join(' ');
+  // 检测报告
+  const reportShow = document.getElementById('detail-report-show');
+  const reportEmpty = document.getElementById('detail-report-empty');
+  const reportNameEl = document.getElementById('detail-report-name');
+  if (p.reportName) {
+    if (reportNameEl) reportNameEl.textContent = p.reportName;
+    if (reportShow) reportShow.style.display = 'flex';
+    if (reportEmpty) reportEmpty.style.display = 'none';
+  } else {
+    if (reportShow) reportShow.style.display = 'none';
+    if (reportEmpty) reportEmpty.style.display = 'block';
+  }
+  // 凭证
+  document.getElementById('vc-pid').textContent = p.pid;
+  document.getElementById('vc-vid').textContent = p.vid;
+  // 编辑按钮状态
+  const editBtn = document.getElementById('detail-edit-btn');
+  if (editBtn) {
+    if (p.canEdit) {
+      editBtn.style.display = 'inline-flex';
+      editBtn.textContent = '✏️ 修改此版本';
+    } else {
+      editBtn.style.display = 'none';
+    }
+  }
+  // 新建版本始终显示
+  const newVerBtn = document.getElementById('detail-new-version-btn');
+  if (newVerBtn) newVerBtn.style.display = 'inline-flex';
+  // 凭证卡
+  document.getElementById('detail-voucher-ready').style.display = p.canDeliver ? 'block' : 'none';
+  document.getElementById('detail-voucher-pending').style.display = p.canDeliver ? 'none' : 'block';
+  // 存当前key
+  window._currentDetailKey = key;
+  goView('v-product-detail');
+}
+
+function openEditMode() {
+  window._submitMode = 'edit'; // 修改模式,回执演示异常
+  // 修改此版本:跳转新建证书表单,预填当前产品数据
+  const p = PRODUCTS[window._currentDetailKey];
+  if (!p) return;
+  goView('v-new-cert');
+  // 简单预填产品名称和ID作为演示
+  setTimeout(() => {
+    const nameEl = document.querySelector('#v-new-cert input[placeholder*="Plush"]') ||
+                   document.querySelector('#v-new-cert input[placeholder*="英文名称"]');
+    if (nameEl) nameEl.value = p.nameEn;
+    const vidEl = document.getElementById('cert-version-id');
+    if (vidEl) vidEl.value = p.vid;
+  }, 100);
+}
+
+function openNewVersion() {
+  // 创建新版本:跳转新建证书表单,Version ID 递增
+  const p = PRODUCTS[window._currentDetailKey];
+  goView('v-new-cert');
+  setTimeout(() => {
+    const nameEl = document.querySelector('#v-new-cert input[placeholder*="英文名称"]');
+    if (nameEl && p) nameEl.value = p.nameEn;
+    const vidEl = document.getElementById('cert-version-id');
+    if (vidEl && p) {
+      // 简单递增:V1→V2,V2→V3,其他加后缀-R1
+      const cur = p.vid;
+      const match = cur.match(/^V(\d+)$/);
+      vidEl.value = match ? 'V' + (parseInt(match[1]) + 1) : cur + '-R1';
+    }
+  }, 100);
+}
+
+function copyDetailIds() {
+  const pid = document.getElementById('vc-pid').textContent;
+  const vid = document.getElementById('vc-vid').textContent;
+  const text = `Certifier ID: GZTOYTRADE\nProduct ID: ${pid}\nVersion ID: ${vid}`;
+  navigator.clipboard.writeText(text).catch(() => {});
+  const btn = event.target;
+  btn.textContent = '✅ 已复制!';
+  setTimeout(() => btn.textContent = '📋 复制三个编号', 2000);
+}
+
+// ===== SHARED: build a removable config-block for mfr or lab =====
+function _makeItemBlock(type, containerId) {
+  const uid = type + '-' + Date.now();
+  let namePh = type === 'mfr' ? '输入制造商名称' : '输入检测机构名称';
+  let fieldsHtml;
+  if (type === 'mfr') {
+    fieldsHtml = `
+      <div class="field" data-req><label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="内部识别编号(提交 CPSC 的唯一标识)"></div>
+      <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:168 Chenghai Road"></div>
+      <div class="field" style="grid-column:1/-1"><label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label><input type="text" placeholder="楼层、套间等补充信息"></div>
+      <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+      <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:Guangdong"></div>
+      <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:汕头市"></div>
+      <div class="field"><label>邮政编码 <span class="req">*</span></label><input type="text" placeholder="如:515000"></div>
+      <div class="field"><label>联系电话 <span class="req">*</span></label><input type="text" placeholder="如:+86-754-88888888"></div>
+      <div class="field"><label>联系邮箱 <span class="req">*</span></label><input type="text" placeholder="工厂联系邮箱"></div>`;
+  } else {
+    fieldsHtml = `
+      <div class="field" style="grid-column:1/-1"><label>机构类型</label><select onchange="this.closest('.config-block').querySelector('.lab-addr-fields').style.display=this.value.startsWith('LAB')?'contents':'none';this.closest('.config-block').querySelector('.lab-addr-fields').style.display=this.options[this.selectedIndex].text.includes('ITL')?'none':'grid'"><option>ITL - CPSC 认可实验室</option><option>LAB - 第三方实验室</option></select></div>
+      <div class="field" data-req><label>简称 / Alternate ID <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="提交 CPSC 的唯一标识"></div>
+      <div class="field" data-req><label>CPSC 编号 <span style="font-size:10px;color:#94A3B8">(ITL 必填,4位)</span><span class="req">*</span></label><input type="text" placeholder="如 0594"></div>
+      <div class="lab-addr-fields" style="display:none;grid-column:1/-1" class="lab-addr-fields-inner">
+        <div class="field" style="grid-column:1/-1"><label>街道地址 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:456 Lab Avenue"></div>
+        <div class="field" style="grid-column:1/-1"><label>详细地址 <span style="font-size:11px;color:#94A3B8">选填</span></label><input type="text" placeholder="楼层、套间等补充信息"></div>
+        <div class="field"><label>国家 <span class="req">*</span></label><select style="width:100%"><option value="China" selected>中国</option><option value="United States">美国</option><option value="Japan">日本</option><option value="South Korea">韩国</option><option value="Germany">德国</option><option value="France">法国</option><option value="United Kingdom">英国</option><option value="Italy">意大利</option><option value="Canada">加拿大</option><option value="Australia">澳大利亚</option><option value="Singapore">新加坡</option><option value="Malaysia">马来西亚</option><option value="Vietnam">越南</option><option value="India">印度</option><option value="Thailand">泰国</option><option value="Indonesia">印度尼西亚</option><option value="Mexico">墨西哥</option><option value="Brazil">巴西</option><option value="Other">其他</option></select></div>
+        <div class="field"><label>省 / 州 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:Guangdong"></div>
+        <div class="field"><label>城市 <span class="en-req">EN</span> <span class="req">*</span></label><input type="text" placeholder="如:广州市"></div>
+        <div class="field"><label>邮政编码 <span class="req">*</span></label><input type="text" placeholder="如:510000"></div>
+        <div class="field"><label>联系电话 <span class="req">*</span></label><input type="text" placeholder="如:+86-20-88888888"></div>
+        <div class="field"><label>联系邮箱 <span class="req">*</span></label><input type="text" placeholder="机构联系邮箱"></div>
+      </div>`;
+  }
+  const tpl = `<div class="config-block" id="${uid}" style="position:relative">
+    <button onclick="document.getElementById('${uid}').remove()" style="position:absolute;top:10px;right:44px;border:none;background:none;color:#EF4444;cursor:pointer;font-size:18px;line-height:1;padding:0" title="删除">&times;</button>
+    <h4>
+      <span class="status-dot" style="background:#CBD5E1;transition:background .3s"></span>
+      <input type="text" placeholder="${namePh}" data-name-input
+        style="border:none;background:none;font-size:13px;font-weight:700;color:#1A3A5C;flex:1;min-width:0;padding:0;margin:0;outline:none;font-family:inherit;line-height:inherit;"
+        oninput="if(this.value){this.closest('.config-block').querySelector('.status-dot').style.background='#22C55E'}else{this.closest('.config-block').querySelector('.status-dot').style.background='#CBD5E1'}">
+    </h4>
+    <div class="fg c2">${fieldsHtml}</div>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <button onclick="_saveBlock('${uid}')" style="background:#3B82F6;color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">保存</button>
+      <span id="${uid}-err" style="font-size:11px;color:#EF4444;display:none">请填写所有必填项</span>
+    </div>
+  </div>`;
+  document.getElementById(containerId).insertAdjacentHTML('beforeend', tpl);
+  document.getElementById(uid).querySelector('input').focus();
+}
+
+function _saveBlock(uid) {
+  const block = document.getElementById(uid);
+  const nameInput = block.querySelector('[data-name-input]');
+  const reqFields = block.querySelectorAll('[data-req] input, [data-req] textarea');
+  let valid = true;
+  // 校验名称
+  if (!nameInput.value.trim()) { nameInput.style.outline = '2px solid #EF4444'; valid = false; }
+  else { nameInput.style.outline = 'none'; }
+  // 校验必填字段
+  reqFields.forEach(inp => {
+    if (!inp.value.trim()) { inp.style.outline = '2px solid #EF4444'; valid = false; }
+    else { inp.style.outline = 'none'; }
+  });
+  const errEl = document.getElementById(uid + '-err');
+  if (!valid) { errEl.style.display = 'inline'; return; }
+  errEl.style.display = 'none';
+  // 锁定:所有 input/select 变 readonly/disabled
+  block.querySelectorAll('input').forEach(inp => inp.setAttribute('readonly', true));
+  block.querySelectorAll('select').forEach(sel => sel.setAttribute('disabled', true));
+  nameInput.style.outline = 'none';
+  // 替换保存按钮为编辑按钮
+  const btnRow = block.querySelector('[onclick="_saveBlock(\''+uid+'\')"]').parentElement;
+  btnRow.innerHTML = `<button onclick="_editBlock('${uid}')" style="background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">编辑</button>`;
+  // 更新状态点
+  block.querySelector('.status-dot').style.background = '#22C55E';
+}
+
+function _editBlock(uid) {
+  const block = document.getElementById(uid);
+  block.querySelectorAll('input').forEach(inp => inp.removeAttribute('readonly'));
+  block.querySelectorAll('select').forEach(sel => sel.removeAttribute('disabled'));
+  const btnRow = block.querySelector('[onclick="_editBlock(\''+uid+'\')"]').parentElement;
+  btnRow.innerHTML = `<button onclick="_saveBlock('${uid}')" style="background:#3B82F6;color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">保存</button><span id="${uid}-err" style="font-size:11px;color:#EF4444;display:none;margin-left:8px">请填写所有必填项</span>`;
+}
+
+// Static initial cards: edit/save
+function _editStaticBlock(uid) {
+  const block = document.getElementById(uid);
+  block.querySelectorAll('input').forEach(inp => inp.removeAttribute('readonly'));
+  block.querySelectorAll('select').forEach(sel => sel.removeAttribute('disabled'));
+  const btnRow = document.getElementById(uid + '-btnrow');
+  btnRow.innerHTML = '<button onclick="_saveStaticBlock(\'' + uid + '\')" style="background:#3B82F6;color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">保存</button><span id="' + uid + '-err" style="font-size:11px;color:#EF4444;display:none;margin-left:8px">请填写所有必填项</span>';
+}
+
+function _saveStaticBlock(uid) {
+  const block = document.getElementById(uid);
+  const reqFields = block.querySelectorAll('[data-req] input, [data-req] textarea');
+  let valid = true;
+  reqFields.forEach(inp => {
+    if (!inp.value.trim()) { inp.style.outline = '2px solid #EF4444'; valid = false; }
+    else { inp.style.outline = 'none'; }
+  });
+  const errEl = document.getElementById(uid + '-err');
+  if (!valid) { if (errEl) errEl.style.display = 'inline'; return; }
+  if (errEl) errEl.style.display = 'none';
+  block.querySelectorAll('input').forEach(inp => inp.setAttribute('readonly', true));
+  block.querySelectorAll('select').forEach(sel => sel.setAttribute('disabled', true));
+  const btnRow = document.getElementById(uid + '-btnrow');
+  btnRow.innerHTML = '<button onclick="_editStaticBlock(\'' + uid + '\')" style="background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">编辑</button>';
+}
+
+// Called from onboarding step 3
+function obAddItem(type) {
+  _makeItemBlock(type, type === 'mfr' ? 'ob-mfr-list' : 'ob-lab-list');
+}
+
+// Called from dashboard settings
+function addSettingItem(type) {
+  _makeItemBlock(type, type === 'mfr' ? 'settings-mfr-list' : 'settings-lab-list');
+}
+
+function copyRowIds(btn, cid, pid, vid) {
+  const text = `Certifier ID: ${cid}\nProduct ID: ${pid}\nVersion ID: ${vid}`;
+  navigator.clipboard.writeText(text).catch(() => {});
+  btn.classList.add('copied');
+  btn.textContent = '✅ 已复制';
+  setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 复制凭证'; }, 2000);
+}
+
+function copyIds() {
+  const text = 'Certifier ID: GZTOYTRADE\nProduct ID: GZT-PB-0001\nVersion ID: V1';
+  navigator.clipboard.writeText(text).catch(() => {});
+  const btn = event.target;
+  btn.textContent = '✅ 已复制!';
+  setTimeout(() => btn.textContent = '📋 复制三个编号', 2000);
+}
+
+// ===== CHECKBOX INTERACTION =====
+document.querySelectorAll('.check-item').forEach(item => {
+  const cb = item.querySelector('input[type="checkbox"]');
+  if (!cb) return;
+  const sync = () => item.classList.toggle('checked', cb.checked);
+  cb.addEventListener('change', sync);
+  item.addEventListener('click', e => {
+    if (e.target !== cb) { cb.checked = !cb.checked; sync(); }
+  });
+});
+
+// ===== MODAL CLOSE ON BG =====
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+// ===== DEMO: switch between first-time / returning user =====
+// Add a small floating toggle for demo purposes
+const demoBar = document.createElement('div');
+demoBar.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:6px;align-items:flex-end';
+demoBar.innerHTML = `
+  <div style="background:#1E3A5F;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;opacity:.7">演示模式</div>
+  <button onclick="showOnboarding()" style="background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-weight:600;color:#374151">1 首次用户视图</button>
+  <button onclick="showDashboard()" style="background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-weight:600;color:#374151">2 日常工作台视图</button>
+`;
+document.body.appendChild(demoBar);
+
+function showOnboarding() {
+  document.getElementById('onboarding-shell').style.display = 'flex';
+  document.getElementById('onboarding-shell').classList.add('active');
+  document.getElementById('dashboard-shell').style.display = 'none';
+  // Reset onboarding to step 1
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('ob-panel-' + i).classList.toggle('active', i === 1);
+    document.getElementById('ob-tab-' + i).className = 'ob-step' + (i === 1 ? ' active' : '');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('onboarding-shell').style.display = 'none';
+  document.getElementById('onboarding-shell').classList.remove('active');
+  document.getElementById('dashboard-shell').style.display = 'block';
+  goView('v-products');
+}
+
+// Init: hide action bar until new cert form is active
+document.addEventListener('DOMContentLoaded', () => {
+  const bar = document.querySelector('.action-bar');
+  if (bar) bar.style.display = 'none';
+});
+
+// ===== PAY MODAL =====
+function openPayModal(type) {
+  const configs = {
+    onboarding: { icon:'🏢', title:'开户服务费用确认', item:'代注册费用', price:500, desc:'HGJ 代理 CPSC 企业账号注册及开户服务', callback: 'afterOnboardingPayment' },
+    cert:       { icon:'📦', title:'证书申报费用确认', item:'证书申报费',  price:300, desc:'CPSC 产品证书 eFiling 申报服务',         callback: 'afterCertPayment'  }
+  };
+  const c = configs[type];
+  if (!c) return;
+  document.getElementById('payModalIcon').textContent = c.icon;
+  document.getElementById('payModalTitle').textContent = c.title;
+  document.getElementById('payItemName').textContent = c.item;
+  document.getElementById('payItemPrice').textContent = '¥ ' + c.price;
+  document.getElementById('payDesc').textContent = c.desc;
+  document.getElementById('payConfirmBtn').textContent = '确认支付 ¥ ' + c.price;
+  document.getElementById('payConfirmBtn').dataset.callback = c.callback;
+  document.getElementById('payOverlay').classList.add('open');
+  document.getElementById('payModal').classList.add('open');
+}
+function closePayModal() {
+  document.getElementById('payOverlay').classList.remove('open');
+  document.getElementById('payModal').classList.remove('open');
+}
+function confirmPayment() {
+  closePayModal();
+  const cb = document.getElementById('payConfirmBtn').dataset.callback;
+  showPaySuccessToast();
+  if (cb === 'afterOnboardingPayment') {
+    setTimeout(() => afterOnboardingPayment(), 600);
+  } else if (cb === 'finishOnboarding') {
+    setTimeout(() => finishOnboarding(), 600);
+  } else if (cb === 'afterCertPayment') {
+    setTimeout(() => afterCertPayment(), 600);
+  }
+}
+function showPaySuccessToast() {
+  const t = document.getElementById('paySuccessToast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+// ===== PRODUCT IDENTIFIERS =====
+function addIdentRow() {
+  const list = document.getElementById('cert-identifiers-list');
+  const row = document.createElement('div');
+  row.className = 'ident-row';
+  row.style.cssText = 'display:flex;gap:8px;margin-bottom:6px';
+  row.innerHTML = `
+    <select class="ident-type" style="width:130px;flex-shrink:0">
+      <option>GTIN</option><option>Model #</option><option>Serial #</option>
+      <option>UPC</option><option>SKU</option><option>Registered #</option><option>Alternate ID</option>
+    </select>
+    <input type="text" class="ident-value" placeholder="ID 内容" maxlength="19"
+      style="flex:1;border:1px solid #E2E8F0;border-radius:6px;padding:7px 10px;font-size:13px">
+    <button type="button" onclick="removeIdentRow(this)"
+      style="flex-shrink:0;background:none;border:1px solid #FECACA;border-radius:6px;padding:6px 10px;color:#EF4444;cursor:pointer;font-size:13px" title="删除">×</button>
+  `;
+  list.appendChild(row);
+}
+function removeIdentRow(btn) {
+  const list = document.getElementById('cert-identifiers-list');
+  if (list.querySelectorAll('.ident-row').length <= 1) return; // 保留至少一条
+  btn.closest('.ident-row').remove();
+}
+
+function afterOnboardingPayment() {
+  // 支付完成后跳到 Step3「等待开户」
+  document.getElementById('ob-panel-2').classList.remove('active');
+  document.getElementById('ob-panel-3').classList.add('active');
+  document.getElementById('ob-tab-2').className = 'ob-step done';
+  document.getElementById('ob-tab-3').className = 'ob-step active';
+  // 演示：1.5s 后模拟 HGJ 开户完成，第3步激活，展示账号信息
+  setTimeout(() => {
+    // 第3步圆点改为绿色已完成
+    const dot = document.getElementById('ob-step3-dot');
+    if (dot) dot.style.cssText = 'width:28px;height:28px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center';
+    if (dot) dot.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const lbl = document.getElementById('ob-step3-label');
+    if (lbl) { lbl.style.color='#16A34A'; lbl.textContent='发送账号信息给您'; }
+    const sub = document.getElementById('ob-step3-sub');
+    if (sub) { sub.style.color='#6B7280'; sub.textContent='已完成'; }
+    // 展示账号信息卡片和确认按钮
+    const card = document.getElementById('ob-acct-info-card');
+    if (card) card.style.display = 'block';
+    const btn = document.getElementById('ob-confirm-acct-btn');
+    if (btn) btn.style.display = 'inline-flex';
+  }, 1500);
+}
+
+function afterCertPayment() {
+  // 弹出等待回执弹框
+  openCertReceiptModal();
+}
+
+// ===== 证书回执弹框 =====
+function openCertReceiptModal() {
+  const overlay = document.getElementById('certReceiptOverlay');
+  const modal = document.getElementById('certReceiptModal');
+  // 重置为等待状态
+  document.getElementById('certReceiptWaiting').style.display = 'block';
+  document.getElementById('certReceiptResult').style.display = 'none';
+  overlay.classList.add('open');
+  modal.classList.add('open');
+  // 模拟 2.5s 后返回结果
+  setTimeout(() => showCertReceiptResult(), 2500);
+}
+
+function showCertReceiptResult() {
+  // 演示模拟:按当前第一个产品 key 决定返回成功还是异常
+  // pb 返回异常,wp 返回成功,其他默认成功
+  const isError = window._submitMode === 'edit'; // 修改模式演示异常
+  document.getElementById('certReceiptWaiting').style.display = 'none';
+  const resultEl = document.getElementById('certReceiptResult');
+  resultEl.style.display = 'block';
+  if (isError) {
+    resultEl.innerHTML = `
+      <div style="text-align:center;padding:8px 0 16px">
+        <div style="font-size:40px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:16px;font-weight:700;color:#B91C1C;margin-bottom:8px">认证异常</div>
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 14px;text-align:left;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:600;color:#B91C1C;margin-bottom:4px">异常原因</div>
+          <div style="font-size:12px;color:#DC2626">Error: Field 'lastTestDate' format invalid. Expected MM/DD/CCYY, got '2026-05-01'</div>
+          <div style="font-size:11px;color:#9CA3AF;margin-top:6px">请将最近测试日期格式改为 MM/DD/YYYY(如 05/01/2026)后重新提交</div>
+        </div>
+        <button class="btn btn-primary" onclick="closeCertReceiptModal();">返回修改</button>
+      </div>
+    `;
+  } else {
+    resultEl.innerHTML = `
+      <div style="text-align:center;padding:8px 0 16px">
+        <div style="font-size:40px;margin-bottom:12px">✅</div>
+        <div style="font-size:16px;font-weight:700;color:#065F46;margin-bottom:8px">认证成功</div>
+        <div style="font-size:13px;color:#6B7280;margin-bottom:16px">产品证书已成功提交并登记到 CPSC,凭证可交付给报关行</div>
+        <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:12px 16px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-around;gap:12px">
+            <div style="text-align:center"><div style="font-size:10px;color:#059669;font-weight:700">CERTIFIER ID</div><div style="font-family:ui-monospace,monospace;font-size:14px;font-weight:800;color:#065F46">GZTOYTRADE</div></div>
+            <div style="text-align:center"><div style="font-size:10px;color:#059669;font-weight:700">PRODUCT ID</div><div style="font-family:ui-monospace,monospace;font-size:14px;font-weight:800;color:#065F46">GZT-PB-0001</div></div>
+            <div style="text-align:center"><div style="font-size:10px;color:#059669;font-weight:700">VERSION ID</div><div style="font-family:ui-monospace,monospace;font-size:14px;font-weight:800;color:#065F46">V1</div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="closeCertReceiptModal();goView('v-products')">查看产品列表</button>
+      </div>
+    `;
+  }
+  window._submitMode = null;
+}
+
+function closeCertReceiptModal() {
+  document.getElementById('certReceiptOverlay').classList.remove('open');
+  document.getElementById('certReceiptModal').classList.remove('open');
+}
+</script>
+
+<!-- ===== 付费弹框 ===== -->
+<div class="pay-overlay" id="payOverlay" onclick="closePayModal()"></div>
+<div class="pay-modal" id="payModal">
+  <div class="pay-modal-header">
+    <span id="payModalIcon">💳</span>
+    <h3 id="payModalTitle">服务费用确认</h3>
+    <button class="pay-modal-close" onclick="closePayModal()">×</button>
+  </div>
+  <div class="pay-modal-body">
+    <div class="pay-item-row">
+      <span id="payItemName" class="pay-item-name">代注册费用</span>
+      <span id="payItemPrice" class="pay-item-price">¥ 500</span>
+    </div>
+    <div class="pay-desc" id="payDesc">HGJ 代理 CPSC 企业账号注册服务</div>
+    <div class="pay-methods">
+      <div class="pay-method-label">选择支付方式</div>
+      <div class="pay-method-list">
+        <label class="pay-method-opt">
+          <input type="radio" name="payMethod" value="haicoin" checked>
+          <span class="pay-method-name">🪙 海币支付</span>
+          <span class="pay-method-balance">余额:¥2,860</span>
+        </label>
+        <label class="pay-method-opt">
+          <input type="radio" name="payMethod" value="qifu">
+          <span class="pay-method-name">📅 账期宝</span>
+          <span class="pay-method-balance">授信:¥5,000</span>
+        </label>
+        <label class="pay-method-opt">
+          <input type="radio" name="payMethod" value="offline">
+          <span class="pay-method-name">🏦 线下支付</span>
+          <span class="pay-method-balance">联系客服</span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="pay-modal-footer">
+    <button class="pay-btn-cancel" onclick="closePayModal()">取消</button>
+    <button class="pay-btn-confirm" id="payConfirmBtn" onclick="confirmPayment()">确认支付 ¥ 500</button>
+  </div>
+</div>
+
+<!-- 支付成功 toast -->
+<div class="pay-success-toast" id="paySuccessToast">✅ 支付成功,已提交</div>
+
+<!-- 证书回执弹框 -->
+<style>
+#certReceiptOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;display:none}
+#certReceiptOverlay.open{display:block}
+#certReceiptModal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;width:420px;max-width:92vw;z-index:1101;box-shadow:0 20px 60px rgba(0,0,0,.2);display:none;overflow:hidden}
+#certReceiptModal.open{display:block}
+.cr-header{background:linear-gradient(135deg,#1E3A5F,#2563EB);padding:18px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.cr-header h3{margin:0;font-size:15px;font-weight:700}
+.cr-close{background:none;border:none;color:rgba(255,255,255,.8);font-size:20px;cursor:pointer;line-height:1}
+.cr-body{padding:24px 20px 20px}
+.cr-waiting{text-align:center;padding:20px 0 28px}
+.cr-spinner{width:48px;height:48px;border:4px solid #E2E8F0;border-top-color:#2563EB;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+</style>
+<div id="certReceiptOverlay"></div>
+<div id="certReceiptModal">
+  <div class="cr-header">
+    <h3>📡 等待 CPSC 回执</h3>
+    <button class="cr-close" onclick="closeCertReceiptModal()">×</button>
+  </div>
+  <div class="cr-body">
+    <div id="certReceiptWaiting" class="cr-waiting">
+      <div class="cr-spinner"></div>
+      <div style="font-size:14px;font-weight:600;color:#1A3A5C;margin-bottom:6px">正在提交到 CPSC...</div>
+      <div style="font-size:12px;color:#94A3B8">通常在几秒内返回认证状态,请稍候</div>
+    </div>
+    <div id="certReceiptResult" style="display:none"></div>
+  </div>
+</div>
+
+</body>
+</html>
